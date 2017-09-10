@@ -14,22 +14,21 @@ namespace IdleRGB
     /// </summary>
     public partial class App : Application
     {
-        public static NotifyIcon icon;
+        //public static NotifyIcon icon;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            App.icon = new NotifyIcon();
+            /*App.icon = new NotifyIcon();
             icon.Click += new EventHandler(Icon_Click);
             icon.Icon = IdleRGB.Properties.Resources.bulb;
-            icon.Visible = true;
+            icon.Visible = true;*/
+
+            ProcessIcon processIcon = new ProcessIcon();
+            processIcon.Display();
+
+            Input input = new Input();
 
             base.OnStartup(e);
-        }
-
-        private void Icon_Click(Object sender, EventArgs e)
-        {
-            MainWindow mw = new MainWindow();
-            mw.Show();
         }
     }
 }

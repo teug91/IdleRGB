@@ -19,11 +19,22 @@ namespace IdleRGB
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SettingsWindow : ToolWindow
     {
-        public MainWindow()
+        public SettingsWindow()
         {
             InitializeComponent();
+
+            TimeSpan it = Properties.Settings.Default.idleTime;
+
+            InitializeComboBox(hoursComboBox, 24);
+            hoursComboBox.SelectedItem = it.Hours;
+        }
+
+        private void InitializeComboBox(ComboBox comboBox, int upperLimit)
+        {
+            for (int i = 0; i <= upperLimit; i++)
+                comboBox.Items.Add(i);
         }
     }
 }
