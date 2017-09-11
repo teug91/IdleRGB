@@ -9,8 +9,7 @@ namespace IdleRGB
     /// </summary>
     class ContextMenus
     {
-        //bool settingsLoaded = false;
-        //MainWindow mainWindow;
+        SettingsWindow settingsWindow;
 
         /// <summary>
         /// Creates this instance.
@@ -41,6 +40,8 @@ namespace IdleRGB
             item.Image = Resources.exit;
             menu.Items.Add(item);
 
+            settingsWindow = new SettingsWindow();
+
             return menu;
         }
 
@@ -51,13 +52,11 @@ namespace IdleRGB
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         void Settings_Click(object sender, EventArgs e)
         {
-            //if (!settingsLoaded)
-            //{
-            //settingsLoaded = true;
-            SettingsWindow mainWindow = new SettingsWindow();
-            mainWindow.Show();
-                //settingsLoaded = false;
-            //}
+            if (settingsWindow.Visibility == System.Windows.Visibility.Hidden)
+            {
+                settingsWindow.LoadSettings();
+                settingsWindow.Show();
+            }
         }
 
         /// <summary>

@@ -28,13 +28,51 @@ namespace IdleRGB
             TimeSpan it = Properties.Settings.Default.idleTime;
 
             InitializeComboBox(hoursComboBox, 24);
+            InitializeComboBox(minutesComboBox, 60);
+            InitializeComboBox(secondsComboBox, 60);
+
+            LoadSettings();
+        }
+
+        public void LoadSettings()
+        {
+            TimeSpan it = Properties.Settings.Default.idleTime;
+
             hoursComboBox.SelectedItem = it.Hours;
+            minutesComboBox.SelectedItem = it.Minutes;
+            secondsComboBox.SelectedItem = it.Seconds;
         }
 
         private void InitializeComboBox(ComboBox comboBox, int upperLimit)
         {
             for (int i = 0; i <= upperLimit; i++)
                 comboBox.Items.Add(i);
+        }
+
+        private void ChangeButton_Click(object sender, RoutedEventArgs e)
+        {
+            int h = (int)hoursComboBox.SelectedItem;
+            int m = (int)minutesComboBox.SelectedItem;
+            int s = (int)secondsComboBox.SelectedItem;
+
+            TimeSpan it = new TimeSpan(h, m, s);
+
+            if (!it.Equals(new TimeSpan(0, 0, 0)))
+            {
+                Properties.Settings.Default.idleTime = it;
+                Properties.Settings.Default.Save();
+
+                Debug.WriteLine("idleTime = " + Properties.Settings.Default.idleTime.ToString());
+
+                Close();
+                System.Windows.Forms.Application.Restart();
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
         }
     }
 }

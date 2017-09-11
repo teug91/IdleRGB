@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:IdleRGB"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="IdleRGB.SettingsWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Background="#FF303D4B" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="Settings" Height="327" Width="596" Background="#FF303D4B" WindowStyle="ToolWindow" ResizeMode="NoResize" Visibility="Hidden" Icon="Resources/bulb.ico">
     <local:ToolWindow.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -171,7 +171,7 @@
                                     <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
                                         <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
                                     </Canvas>
-                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Visibility="Visible"/>
                                 </Grid>
                             </ScrollViewer>
                         </Border>
@@ -181,7 +181,7 @@
                 <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
             </Grid>
             <ControlTemplate.Triggers>
-                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="false">
                     <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
                     <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
                 </Trigger>
@@ -378,35 +378,74 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <SolidColorBrush x:Key="Button.Static.Background"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="White"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="White" Opacity="0.1"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="White"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="White"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="White"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="Black"/>
+        <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="Background" Value="#FF374048"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </local:ToolWindow.Resources>
     <Grid>
-        <ComboBox x:Name="hoursComboBox" HorizontalAlignment="Left" Margin="30,64,0,0" Width="80" Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White" Background="#FF1D252D" BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33" VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False"/>
+        <ComboBox x:Name="hoursComboBox" HorizontalAlignment="Left" Margin="30,64,0,0" Width="80" Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White" Background="#FF1D252D" BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33" VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
         <Label x:Name="idleTimeLabel" Content="Change time before idle" HorizontalAlignment="Left" Margin="22,14,0,0" VerticalAlignment="Top" FontSize="22">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
             </Label.Foreground>
         </Label>
-        <Label x:Name="colonLabel1" Content=":" HorizontalAlignment="Left" Margin="115,60,0,0" VerticalAlignment="Top" FontSize="16" Padding="10,5">
+        <Label x:Name="colonLabel1" Content=":" HorizontalAlignment="Left" Margin="115,66,0,0" VerticalAlignment="Top" FontSize="16" Padding="10,5">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
             </Label.Foreground>
         </Label>
-        <ComboBox x:Name="hoursComboBox_Copy" HorizontalAlignment="Left" Margin="375,214,0,0" VerticalAlignment="Top" Width="80" Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White">
-        </ComboBox>
-        <ComboBox x:Name="hoursComboBox_Copy1" HorizontalAlignment="Left" Margin="429,151,0,0" VerticalAlignment="Top" Width="80" Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White">
-            <ComboBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ComboBoxItem}">
-                    <Setter Property="Background" Value="#FF1D252D"/>
-                    <Setter Property="BorderBrush" Value="White"/>
-                </Style>
-            </ComboBox.ItemContainerStyle>
-        </ComboBox>
-        <Label x:Name="colonLabel1_Copy" Content=":" HorizontalAlignment="Left" Margin="375,156,0,0" VerticalAlignment="Top" FontSize="16" Padding="10,5">
+        <Label x:Name="colonLabel2" Content=":" HorizontalAlignment="Left" Margin="228,66,0,0" VerticalAlignment="Top" FontSize="16" Padding="10,5">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
             </Label.Foreground>
         </Label>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="270,272,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="444,272,0,0" VerticalAlignment="Top" Width="75"/>
+        <ComboBox x:Name="minutesComboBox" HorizontalAlignment="Left" Margin="143,64,0,0" Width="80" Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White" Background="#FF1D252D" BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33" VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        <ComboBox x:Name="secondsComboBox" HorizontalAlignment="Left" Margin="256,64,0,0" Width="80" Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White" Background="#FF1D252D" BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33" VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        <Button x:Name="changeButton" Content="Change" HorizontalAlignment="Left" Margin="373,241,0,0" VerticalAlignment="Top" Width="90" Style="{DynamicResource ButtonStyle}" FontSize="15" Foreground="White" Height="30" Click="ChangeButton_Click"/>
+        <Button x:Name="cancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="480,241,0,0" VerticalAlignment="Top" Width="90" Style="{DynamicResource ButtonStyle}" FontSize="15" Foreground="White" Height="30" Click="CancelButton_Click"/>
     </Grid>
 </local:ToolWindow>

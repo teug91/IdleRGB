@@ -49,9 +49,7 @@ namespace IdleRGB
 
         private void Icon_Click(Object sender, EventArgs e)
         {
-            //MainWindow mw = new MainWindow();
-            //mw.Show();
-            //MainWindow.Show();
+            // TODO
         }
     }
 }
