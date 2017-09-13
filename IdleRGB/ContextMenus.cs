@@ -10,6 +10,7 @@ namespace IdleRGB
     class ContextMenus
     {
         SettingsWindow settingsWindow;
+        public event EventHandler<EventArgs> ExitPressed;
 
         /// <summary>
         /// Creates this instance.
@@ -42,6 +43,8 @@ namespace IdleRGB
 
             settingsWindow = new SettingsWindow();
 
+            //menu.ForeColor = System.Drawing.Color.Red;
+
             return menu;
         }
 
@@ -67,6 +70,7 @@ namespace IdleRGB
         void Exit_Click(object sender, EventArgs e)
         {
             // Quit application.
+            ExitPressed(this, new EventArgs());
             System.Windows.Application.Current.Shutdown();
         }
     }

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="idleTime" Type="System.TimeSpan" Scope="User">
-      <Value Profile="(Default)">00:05:00</Value>
+      <Value Profile="(Default)">00:00:05</Value>
     </Setting>
     <Setting Name="idleColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Black</Value>
@@ -25,6 +25,15 @@
     </Setting>
     <Setting Name="muteColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">255, 174, 70</Value>
+    </Setting>
+    <Setting Name="enableKeyBoard" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="enableMouse" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="enableMedia" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -9,6 +9,8 @@ using CUE.NET.Devices.Mouse.Enums;
 using CUE.NET.Brushes;
 using CUE.NET.Devices.Keyboard.Enums;
 using CUE.NET.Groups;
+using CUE.NET.Devices.Generic.Enums;
+using System.Windows;
 
 namespace IdleRGB
 {
@@ -23,6 +25,9 @@ namespace IdleRGB
         Color playPauseColor;
         Color nextColor;
         Color muteColor;
+        bool enableKeyboard;
+        bool enableMouse;
+        bool enableMedia;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LedChanger"/> class.
@@ -35,6 +40,14 @@ namespace IdleRGB
             nextColor = Properties.Settings.Default.nextColor;
             muteColor = Properties.Settings.Default.muteColor;
 
+            enableKeyboard = Properties.Settings.Default.enableKeyBoard;
+            enableMouse = Properties.Settings.Default.enableMouse;
+            enableMedia = Properties.Settings.Default.enableMedia;
+
+
+            Debug.WriteLine("enableKeyboard: " + enableKeyboard.ToString());
+            Debug.WriteLine("enableMouse: " + enableMouse.ToString());
+
             InitializeCueSDK();
         }
 
@@ -46,25 +59,36 @@ namespace IdleRGB
             try
             {
                 CueSDK.Initialize();
-                corsairKeyboard = CueSDK.KeyboardSDK;
-                corsairMouse = CueSDK.MouseSDK;
 
-                if (corsairKeyboard == null)
+                if (enableKeyboard)
                 {
-                    throw new WrapperException("No keyboard found");
+                    corsairKeyboard = CueSDK.KeyboardSDK;
+                    if (corsairKeyboard == null)
+                    {
+                        throw new WrapperException("No keyboard found");
 
+                    }
                 }
 
-                if (corsairMouse == null)
+                if (enableMouse)
                 {
-                    throw new WrapperException("No mouse found");
+                    corsairMouse = CueSDK.MouseSDK;
+                    if (corsairMouse == null)
+                    {
+                        throw new WrapperException("No mouse found");
 
+                    }
                 }
+            }
+
+            catch (CUEException e)
+            {
+                Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
             }
 
             catch (Exception e)
             {
-                Debug.WriteLine(e);
+                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
             }
         }
 
@@ -74,31 +98,48 @@ namespace IdleRGB
         /// <param name="backgroundColor">The <see cref="System.Drawing.Color"/> for the background.</param>
         public void ChangeLeds(Color backgroundColor)
         {
-            corsairKeyboard.Brush = new SolidColorBrush(backgroundColor);
+            try
+            {
+                if (enableKeyboard)
+                {
+                    corsairKeyboard.Brush = new SolidColorBrush(backgroundColor);
 
-            ListLedGroup stop = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Stop);
-            stop.Brush = new SolidColorBrush(stopColor);
+                    if (enableMedia)
+                    {
+                        ListLedGroup stop = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Stop);
+                        stop.Brush = new SolidColorBrush(stopColor);
 
-            ListLedGroup scanPreviousTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanPreviousTrack);
-            scanPreviousTrack.Brush = new SolidColorBrush(prevColor);
+                        ListLedGroup scanPreviousTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanPreviousTrack);
+                        scanPreviousTrack.Brush = new SolidColorBrush(prevColor);
 
-            ListLedGroup playPause = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.PlayPause);
-            playPause.Brush = new SolidColorBrush(playPauseColor);
+                        ListLedGroup playPause = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.PlayPause);
+                        playPause.Brush = new SolidColorBrush(playPauseColor);
 
-            ListLedGroup scanNextTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanNextTrack);
-            scanNextTrack.Brush = new SolidColorBrush(nextColor);
+                        ListLedGroup scanNextTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanNextTrack);
+                        scanNextTrack.Brush = new SolidColorBrush(nextColor);
 
-            ListLedGroup mute = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Mute);
-            mute.Brush = new SolidColorBrush(muteColor);
+                        ListLedGroup mute = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Mute);
+                        mute.Brush = new SolidColorBrush(muteColor);
+                    }
 
-            corsairKeyboard.Update();
+                    corsairKeyboard.Update();
+                }
 
-            corsairMouse[CorsairMouseLedId.B1].Color = backgroundColor;
-            corsairMouse[CorsairMouseLedId.B2].Color = backgroundColor;
-            corsairMouse[CorsairMouseLedId.B3].Color = backgroundColor;
-            corsairMouse[CorsairMouseLedId.B4].Color = backgroundColor;
+                if (enableMouse)
+                {
+                    corsairMouse[CorsairMouseLedId.B1].Color = backgroundColor;
+                    corsairMouse[CorsairMouseLedId.B2].Color = backgroundColor;
+                    corsairMouse[CorsairMouseLedId.B3].Color = backgroundColor;
+                    corsairMouse[CorsairMouseLedId.B4].Color = backgroundColor;
 
-            corsairMouse.Update();
+                    corsairMouse.Update();
+                }
+            }
+
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
 
         /// <summary>

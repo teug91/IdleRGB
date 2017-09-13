@@ -35,7 +35,9 @@ namespace IdleRGB
             ni.Visible = true;
 
             // Attach a context menu.
-            ni.ContextMenuStrip = new ContextMenus().Create();
+            ContextMenus contextMenus = new ContextMenus();
+            contextMenus.ExitPressed += ExitPressed;
+            ni.ContextMenuStrip = contextMenus.Create();
         }
 
         /// <summary>
@@ -44,6 +46,11 @@ namespace IdleRGB
         public void Dispose()
         {
             // When the application closes, this will remove the icon from the system tray immediately.
+            ni.Dispose();
+        }
+
+        private void ExitPressed(object sender, EventArgs e)
+        {
             ni.Dispose();
         }
 
