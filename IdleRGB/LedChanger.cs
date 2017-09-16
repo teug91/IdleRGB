@@ -1,19 +1,21 @@
 ﻿using System;
-using System.Diagnostics;
-using CUE.NET;
-using CUE.NET.Devices.Mouse;
-using CUE.NET.Devices.Keyboard;
-using CUE.NET.Exceptions;
 using System.Drawing;
-using CUE.NET.Devices.Mouse.Enums;
-using CUE.NET.Brushes;
-using CUE.NET.Devices.Keyboard.Enums;
-using CUE.NET.Groups;
-using CUE.NET.Devices.Generic.Enums;
-using System.Windows;
-using CUE.NET.Devices.Generic;
-using System.Collections;
+using System.Diagnostics;
 using System.Collections.Generic;
+using CUE.NET;
+using CUE.NET.Groups;
+using CUE.NET.Brushes;
+using CUE.NET.Exceptions;
+using CUE.NET.Devices.Headset;
+using CUE.NET.Devices.Headset.Enums;
+using CUE.NET.Devices.Mousemat;
+using CUE.NET.Devices.Mousemat.Enums;
+using CUE.NET.Devices.Mouse;
+using CUE.NET.Devices.Mouse.Enums;
+using CUE.NET.Devices.Keyboard;
+using CUE.NET.Devices.Keyboard.Enums;
+using CUE.NET.Devices.Generic;
+using CUE.NET.Devices.Generic.Enums;
 
 namespace IdleRGB
 {
@@ -21,6 +23,8 @@ namespace IdleRGB
     {
         CorsairKeyboard corsairKeyboard;
         CorsairMouse corsairMouse;
+        CorsairHeadset corsairHeadset;
+        CorsairMousemat corsairMousemat;
 
         // Color settings.
         Color stopColor;
@@ -28,8 +32,10 @@ namespace IdleRGB
         Color playPauseColor;
         Color nextColor;
         Color muteColor;
-        bool enableKeyboard;
-        bool enableMouse;
+        bool keyboardConnected;
+        bool mouseConnected;
+        bool headsetConnected;
+        bool mousematConnected;
         bool enableMedia;
 
         /// <summary>
@@ -42,10 +48,6 @@ namespace IdleRGB
             playPauseColor = Properties.Settings.Default.playPauseColor;
             nextColor = Properties.Settings.Default.nextColor;
             muteColor = Properties.Settings.Default.muteColor;
-
-            enableKeyboard = Properties.Settings.Default.enableKeyBoard;
-            enableMouse = Properties.Settings.Default.enableMouse;
-            enableMedia = Properties.Settings.Default.enableMedia;
 
             InitializeCueSDK();
         }
@@ -60,6 +62,8 @@ namespace IdleRGB
                 CueSDK.Initialize();
                 InitializeKeyboard();
                 InitializeMouse();
+                InitializeHeadset();
+                InitializeMousemat();
             }
 
             catch (CUEException e)
@@ -70,60 +74,130 @@ namespace IdleRGB
 
         private void InitializeKeyboard()
         {
-            try
+            if (CueSDK.IsSDKAvailable(CorsairDeviceType.Keyboard))
             {
-                corsairKeyboard = CueSDK.KeyboardSDK;
-
-                if (corsairKeyboard == null)
+                try
                 {
-                    enableKeyboard = false;
-                    throw new WrapperException("No keyboard found");
+                    corsairKeyboard = CueSDK.KeyboardSDK;
+
+                    if (corsairKeyboard == null)
+                    {
+                        keyboardConnected = false;
+                        throw new WrapperException("No keyboard found");
+                    }
+
+                    else
+                        keyboardConnected = true;
+
+                    switch (corsairKeyboard.DeviceInfo.Model.ToString())
+                    {
+                        case "K70 RGB":
+                            enableMedia = true;
+                            break;
+                        case "K95 RGB":
+                            enableMedia = true;
+                            break;
+                        default:
+                            enableMedia = false;
+                            break;
+                    }
                 }
 
-                else
-                    enableKeyboard = true;
-
-                switch (corsairKeyboard.DeviceInfo.Model.ToString())
+                catch (WrapperException e)
                 {
-                    case "K70 RGB":
-                        enableMedia = true;
-                        break;
-                    case "K95 RGB":
-                        enableMedia = true;
-                        break;
-                    default:
-                        enableMedia = false;
-                        break;
+                    Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
                 }
             }
 
-            catch (WrapperException e)
-            {
-                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
-            }
+            else
+                keyboardConnected = false;
         }
 
         private void InitializeMouse()
         {
-            try
+            if (CueSDK.IsSDKAvailable(CorsairDeviceType.Mouse))
             {
-                corsairMouse = CueSDK.MouseSDK;
-
-                if (corsairMouse == null)
+                try
                 {
-                    enableMouse = false;
-                    throw new WrapperException("No Mouse found");
+                    corsairMouse = CueSDK.MouseSDK;
 
+                    if (corsairMouse == null)
+                    {
+                        mouseConnected = false;
+                        throw new WrapperException("No Mouse found");
+
+                    }
+
+                    else
+                        mouseConnected = true;
                 }
 
-                else
-                    enableMouse = true;
+                catch (WrapperException e)
+                {
+                    Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+                }
             }
 
-            catch (WrapperException e)
+            else
+                mouseConnected = false;
+        }
+
+        private void InitializeHeadset()
+        {
+            if (CueSDK.IsSDKAvailable(CorsairDeviceType.Headset))
             {
-                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+                try
+                {
+                    corsairHeadset = CueSDK.HeadsetSDK;
+
+                    if (corsairHeadset == null)
+                    {
+                        headsetConnected = false;
+                        throw new WrapperException("No Headset found");
+
+                    }
+
+                    else
+                        headsetConnected = true;
+                }
+
+                catch (WrapperException e)
+                {
+                    Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+                }
             }
+
+            else
+                headsetConnected = false;
+        }
+
+        private void InitializeMousemat()
+        {
+            if (CueSDK.IsSDKAvailable(CorsairDeviceType.Mousemat))
+            {
+                try
+                {
+                    corsairMousemat = CueSDK.MousematSDK;
+
+                    if (corsairMousemat == null)
+                    {
+                        mousematConnected = false;
+                        throw new WrapperException("No Mousemat found");
+
+                    }
+
+                    else
+                        mousematConnected = true;
+                }
+
+                catch (WrapperException e)
+                {
+                    Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+                }
+            }
+
+            else
+                mousematConnected = false;
         }
 
         /// <summary>
@@ -134,7 +208,7 @@ namespace IdleRGB
         {
             try
             {
-                if (enableKeyboard)
+                if (keyboardConnected)
                 {
                     corsairKeyboard.Brush = new SolidColorBrush(backgroundColor);
 
@@ -159,12 +233,32 @@ namespace IdleRGB
                     corsairKeyboard.Update();
                 }
 
-                if (enableMouse)
+                if (mouseConnected)
                 {
                     IEnumerator<CorsairLed> mouseLeds = corsairMouse.GetEnumerator();
 
                     while (mouseLeds.MoveNext())
                         mouseLeds.Current.Color = backgroundColor;
+
+                    corsairMouse.Update();
+                }
+
+                if(headsetConnected)
+                {
+                    IEnumerator<CorsairLed> headsetLeds = corsairHeadset.GetEnumerator();
+
+                    while (headsetLeds.MoveNext())
+                        headsetLeds.Current.Color = backgroundColor;
+
+                    corsairMouse.Update();
+                }
+
+                if (mousematConnected)
+                {
+                    IEnumerator<CorsairLed> mousematLeds = corsairMousemat.GetEnumerator();
+
+                    while (mousematLeds.MoveNext())
+                        mousematLeds.Current.Color = backgroundColor;
 
                     corsairMouse.Update();
                 }

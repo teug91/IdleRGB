@@ -25,7 +25,7 @@ namespace IdleRGB.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("00:00:05")]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:05:00")]
         public global::System.TimeSpan idleTime {
             get {
                 return ((global::System.TimeSpan)(this["idleTime"]));
@@ -116,42 +116,6 @@ namespace IdleRGB.Properties {
             }
             set {
                 this["muteColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool enableKeyBoard {
-            get {
-                return ((bool)(this["enableKeyBoard"]));
-            }
-            set {
-                this["enableKeyBoard"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool enableMouse {
-            get {
-                return ((bool)(this["enableMouse"]));
-            }
-            set {
-                this["enableMouse"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool enableMedia {
-            get {
-                return ((bool)(this["enableMedia"]));
-            }
-            set {
-                this["enableMedia"] = value;
             }
         }
     }
