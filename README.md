@@ -1,2 +1,3 @@
 # IdleRGB2
-WPF version
+Changes LEDs on Corsair keyboard and mouse
+New WPF version.
