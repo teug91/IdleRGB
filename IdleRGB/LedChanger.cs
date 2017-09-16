@@ -11,6 +11,9 @@ using CUE.NET.Devices.Keyboard.Enums;
 using CUE.NET.Groups;
 using CUE.NET.Devices.Generic.Enums;
 using System.Windows;
+using CUE.NET.Devices.Generic;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace IdleRGB
 {
@@ -44,49 +47,80 @@ namespace IdleRGB
             enableMouse = Properties.Settings.Default.enableMouse;
             enableMedia = Properties.Settings.Default.enableMedia;
 
-
-            Debug.WriteLine("enableKeyboard: " + enableKeyboard.ToString());
-            Debug.WriteLine("enableMouse: " + enableMouse.ToString());
-
             InitializeCueSDK();
         }
 
         /// <summary>
         /// Initializes CUE SDK.
         /// </summary>
-        void InitializeCueSDK()
+        private void InitializeCueSDK()
         {
             try
             {
                 CueSDK.Initialize();
-
-                if (enableKeyboard)
-                {
-                    corsairKeyboard = CueSDK.KeyboardSDK;
-                    if (corsairKeyboard == null)
-                    {
-                        throw new WrapperException("No keyboard found");
-
-                    }
-                }
-
-                if (enableMouse)
-                {
-                    corsairMouse = CueSDK.MouseSDK;
-                    if (corsairMouse == null)
-                    {
-                        throw new WrapperException("No mouse found");
-
-                    }
-                }
+                InitializeKeyboard();
+                InitializeMouse();
             }
 
             catch (CUEException e)
             {
                 Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
             }
+        }
 
-            catch (Exception e)
+        private void InitializeKeyboard()
+        {
+            try
+            {
+                corsairKeyboard = CueSDK.KeyboardSDK;
+
+                if (corsairKeyboard == null)
+                {
+                    enableKeyboard = false;
+                    throw new WrapperException("No keyboard found");
+                }
+
+                else
+                    enableKeyboard = true;
+
+                switch (corsairKeyboard.DeviceInfo.Model.ToString())
+                {
+                    case "K70 RGB":
+                        enableMedia = true;
+                        break;
+                    case "K95 RGB":
+                        enableMedia = true;
+                        break;
+                    default:
+                        enableMedia = false;
+                        break;
+                }
+            }
+
+            catch (WrapperException e)
+            {
+                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+            }
+        }
+
+        private void InitializeMouse()
+        {
+            try
+            {
+                corsairMouse = CueSDK.MouseSDK;
+
+                if (corsairMouse == null)
+                {
+                    enableMouse = false;
+                    throw new WrapperException("No Mouse found");
+
+                }
+
+                else
+                    enableMouse = true;
+            }
+
+            catch (WrapperException e)
             {
                 Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
             }
@@ -127,10 +161,10 @@ namespace IdleRGB
 
                 if (enableMouse)
                 {
-                    corsairMouse[CorsairMouseLedId.B1].Color = backgroundColor;
-                    corsairMouse[CorsairMouseLedId.B2].Color = backgroundColor;
-                    corsairMouse[CorsairMouseLedId.B3].Color = backgroundColor;
-                    corsairMouse[CorsairMouseLedId.B4].Color = backgroundColor;
+                    IEnumerator<CorsairLed> mouseLeds = corsairMouse.GetEnumerator();
+
+                    while (mouseLeds.MoveNext())
+                        mouseLeds.Current.Color = backgroundColor;
 
                     corsairMouse.Update();
                 }
