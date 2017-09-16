@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using NotifyIcon = System.Windows.Forms.NotifyIcon;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace IdleRGB
 {
@@ -14,21 +14,21 @@ namespace IdleRGB
     /// </summary>
     public partial class App : Application
     {
-        //public static NotifyIcon icon;
+        private TaskbarIcon notifyIcon;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            /*App.icon = new NotifyIcon();
-            icon.Click += new EventHandler(Icon_Click);
-            icon.Icon = IdleRGB.Properties.Resources.bulb;
-            icon.Visible = true;*/
+            base.OnStartup(e);
 
-            ProcessIcon processIcon = new ProcessIcon();
-            processIcon.Display();
+            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
 
             Input input = new Input();
+        }
 
-            base.OnStartup(e);
+        protected override void OnExit(ExitEventArgs e)
+        {
+            notifyIcon.Dispose();
+            base.OnExit(e);
         }
     }
 }

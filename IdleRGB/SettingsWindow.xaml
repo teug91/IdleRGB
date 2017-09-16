@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:IdleRGB"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="IdleRGB.SettingsWindow"
         mc:Ignorable="d"
-        Title="Settings" Height="327" Width="596" Background="#FF303D4B" WindowStyle="ToolWindow" ResizeMode="NoResize" Visibility="Hidden" Icon="Resources/bulb.ico" >
+        Title="Settings" Height="327" Width="596" Background="#FF303D4B" WindowStyle="ToolWindow" ResizeMode="NoResize" Visibility="Visible" Icon="Resources/bulb.ico">
     <local:ToolWindow.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">

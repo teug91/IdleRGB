@@ -72,7 +72,7 @@ namespace IdleRGB
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            Hide();
+            Close();
         }
     }
 }
