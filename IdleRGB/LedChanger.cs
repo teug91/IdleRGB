@@ -170,9 +170,9 @@ namespace IdleRGB
                 }
             }
 
-            catch (Exception e)
+            catch (WrapperException e)
             {
-                MessageBox.Show(e.ToString());
+                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
             }
         }
 
@@ -181,7 +181,15 @@ namespace IdleRGB
         /// </summary>
         public void ResetLeds()
         {
-            CueSDK.Reinitialize();
+            try
+            {
+                CueSDK.Reinitialize();
+            }
+
+            catch(WrapperException e)
+            {
+                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+            }
         }
     }
 }
