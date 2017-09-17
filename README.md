@@ -1,6 +1,5 @@
 # IdleRGB
-Changes LEDs on Corsair keyboard and mouse.
-New WPF version.
+Changes LEDs on Corsair keyboard, mouse, headset, and mousemat.
 
 # Credit
 * [CUE.NET](https://github.com/DarthAffe/CUE.NET) - C# (.NET) Wrapper library around the Corsair CUE-SDK
