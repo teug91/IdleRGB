@@ -7,11 +7,8 @@ using CUE.NET.Groups;
 using CUE.NET.Brushes;
 using CUE.NET.Exceptions;
 using CUE.NET.Devices.Headset;
-using CUE.NET.Devices.Headset.Enums;
 using CUE.NET.Devices.Mousemat;
-using CUE.NET.Devices.Mousemat.Enums;
 using CUE.NET.Devices.Mouse;
-using CUE.NET.Devices.Mouse.Enums;
 using CUE.NET.Devices.Keyboard;
 using CUE.NET.Devices.Keyboard.Enums;
 using CUE.NET.Devices.Generic;
@@ -70,48 +67,54 @@ namespace IdleRGB
             {
                 Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
             }
+
+            catch (WrapperException e)
+            {
+                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+            }
         }
 
         private void InitializeKeyboard()
         {
-            if (CueSDK.IsSDKAvailable(CorsairDeviceType.Keyboard))
+            try
             {
-                try
+                if (CueSDK.IsSDKAvailable(CorsairDeviceType.Keyboard))
                 {
-                    corsairKeyboard = CueSDK.KeyboardSDK;
+                        corsairKeyboard = CueSDK.KeyboardSDK;
 
-                    if (corsairKeyboard == null)
-                    {
-                        keyboardConnected = false;
-                        throw new WrapperException("No keyboard found");
-                    }
+                        if (corsairKeyboard == null)
+                        {
+                            keyboardConnected = false;
+                            throw new WrapperException("No keyboard found");
+                        }
 
-                    else
-                        keyboardConnected = true;
+                        else
+                            keyboardConnected = true;
 
-                    switch (corsairKeyboard.DeviceInfo.Model.ToString())
-                    {
-                        case "K70 RGB":
-                            enableMedia = true;
-                            break;
-                        case "K95 RGB":
-                            enableMedia = true;
-                            break;
-                        default:
-                            enableMedia = false;
-                            break;
-                    }
+                        switch (corsairKeyboard.DeviceInfo.Model.ToString())
+                        {
+                            case "K70 RGB":
+                                enableMedia = true;
+                                break;
+                            case "K95 RGB":
+                                enableMedia = true;
+                                break;
+                            default:
+                                enableMedia = false;
+                                break;
+                        }
                 }
 
-                catch (WrapperException e)
-                {
-                    Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
-                }
+                else
+                    keyboardConnected = false;
             }
 
-            else
-                keyboardConnected = false;
+            catch (WrapperException e)
+            {
+                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+            }
         }
+
 
         private void InitializeMouse()
         {

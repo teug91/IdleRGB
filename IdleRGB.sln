@@ -1,20 +1,32 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdleRGB", "IdleRGB\IdleRGB.csproj", "{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{74D54AA2-FB3D-4369-BB99-46990B3FA0D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Debug|x86.ActiveCfg = Debug|x86
+		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Debug|x86.Build.0 = Debug|x86
 		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Release|x86.ActiveCfg = Release|x86
+		{4EE4096F-CF1D-4254-8955-B9BEDD921AEE}.Release|x86.Build.0 = Release|x86
+		{74D54AA2-FB3D-4369-BB99-46990B3FA0D4}.Debug|Any CPU.ActiveCfg = Debug
+		{74D54AA2-FB3D-4369-BB99-46990B3FA0D4}.Debug|x86.ActiveCfg = Debug
+		{74D54AA2-FB3D-4369-BB99-46990B3FA0D4}.Release|Any CPU.ActiveCfg = Release
+		{74D54AA2-FB3D-4369-BB99-46990B3FA0D4}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
