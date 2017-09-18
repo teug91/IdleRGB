@@ -1,56 +1,56 @@
 ﻿using System;
-using System.Drawing;
 using System.Diagnostics;
-using System.Collections.Generic;
+using System.Drawing;
 using CUE.NET;
-using CUE.NET.Groups;
 using CUE.NET.Brushes;
-using CUE.NET.Exceptions;
+using CUE.NET.Devices.Generic.Enums;
 using CUE.NET.Devices.Headset;
-using CUE.NET.Devices.Mousemat;
-using CUE.NET.Devices.Mouse;
 using CUE.NET.Devices.Keyboard;
 using CUE.NET.Devices.Keyboard.Enums;
-using CUE.NET.Devices.Generic;
-using CUE.NET.Devices.Generic.Enums;
+using CUE.NET.Devices.Mouse;
+using CUE.NET.Devices.Mousemat;
+using CUE.NET.Exceptions;
+using CUE.NET.Groups;
+using IdleRGB.Properties;
 
 namespace IdleRGB
 {
-    class LedChanger
+    internal class LedChanger
     {
-        CorsairKeyboard corsairKeyboard;
-        CorsairMouse corsairMouse;
-        CorsairHeadset corsairHeadset;
-        CorsairMousemat corsairMousemat;
-
         // Color settings.
-        Color stopColor;
-        Color prevColor;
-        Color playPauseColor;
-        Color nextColor;
-        Color muteColor;
-        bool keyboardConnected;
-        bool mouseConnected;
-        bool headsetConnected;
-        bool mousematConnected;
-        bool enableMedia;
+        private readonly Color muteColor;
+        private readonly Color nextColor;
+        private readonly Color playPauseColor;
+        private readonly Color prevColor;
+        private readonly Color stopColor;
+
+        private CorsairHeadset corsairHeadset;
+        private CorsairKeyboard corsairKeyboard;
+        private CorsairMouse corsairMouse;
+        private CorsairMousemat corsairMousemat;
+
+        private bool enableMedia;
+        private bool headsetConnected;
+        private bool keyboardConnected;
+        private bool mouseConnected;
+        private bool mousematConnected;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LedChanger"/> class.
+        ///     Initializes a new instance of the <see cref="LedChanger" /> class.
         /// </summary>
         public LedChanger()
         {
-            stopColor = Properties.Settings.Default.stopColor;
-            prevColor = Properties.Settings.Default.nextColor;
-            playPauseColor = Properties.Settings.Default.playPauseColor;
-            nextColor = Properties.Settings.Default.nextColor;
-            muteColor = Properties.Settings.Default.muteColor;
+            stopColor = Settings.Default.stopColor;
+            prevColor = Settings.Default.nextColor;
+            playPauseColor = Settings.Default.playPauseColor;
+            nextColor = Settings.Default.nextColor;
+            muteColor = Settings.Default.muteColor;
 
             InitializeCueSDK();
         }
 
         /// <summary>
-        /// Initializes CUE SDK.
+        ///     Initializes CUE SDK.
         /// </summary>
         private void InitializeCueSDK()
         {
@@ -74,39 +74,44 @@ namespace IdleRGB
             }
         }
 
+        /// <summary>
+        /// Initializes keyboard, if connected.
+        /// </summary>
         private void InitializeKeyboard()
         {
             try
             {
                 if (CueSDK.IsSDKAvailable(CorsairDeviceType.Keyboard))
                 {
-                        corsairKeyboard = CueSDK.KeyboardSDK;
+                    corsairKeyboard = CueSDK.KeyboardSDK;
 
-                        if (corsairKeyboard == null)
-                        {
-                            keyboardConnected = false;
-                            throw new WrapperException("No keyboard found");
-                        }
+                    if (corsairKeyboard == null)
+                    {
+                        keyboardConnected = false;
+                        throw new WrapperException("No keyboard found");
+                    }
 
-                        else
-                            keyboardConnected = true;
+                    keyboardConnected = true;
 
-                        switch (corsairKeyboard.DeviceInfo.Model.ToString())
-                        {
-                            case "K70 RGB":
-                                enableMedia = true;
-                                break;
-                            case "K95 RGB":
-                                enableMedia = true;
-                                break;
-                            default:
-                                enableMedia = false;
-                                break;
-                        }
+                    // Checking if keyboard has media LEDs.
+                    switch (corsairKeyboard.DeviceInfo.Model)
+                    {
+                        case "K70 RGB":
+                            enableMedia = true;
+                            break;
+                        case "K95 RGB":
+                            enableMedia = true;
+                            break;
+                        default:
+                            enableMedia = false;
+                            break;
+                    }
                 }
 
                 else
+                {
                     keyboardConnected = false;
+                }
             }
 
             catch (WrapperException e)
@@ -115,11 +120,12 @@ namespace IdleRGB
             }
         }
 
-
+        /// <summary>
+        /// Initializes mouse, if connected.
+        /// </summary>
         private void InitializeMouse()
         {
             if (CueSDK.IsSDKAvailable(CorsairDeviceType.Mouse))
-            {
                 try
                 {
                     corsairMouse = CueSDK.MouseSDK;
@@ -128,27 +134,26 @@ namespace IdleRGB
                     {
                         mouseConnected = false;
                         throw new WrapperException("No Mouse found");
-
                     }
 
-                    else
-                        mouseConnected = true;
+                    mouseConnected = true;
                 }
 
                 catch (WrapperException e)
                 {
                     Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
                 }
-            }
 
             else
                 mouseConnected = false;
         }
 
+        /// <summary>
+        /// Initializes headset, if connected.
+        /// </summary>
         private void InitializeHeadset()
         {
             if (CueSDK.IsSDKAvailable(CorsairDeviceType.Headset))
-            {
                 try
                 {
                     corsairHeadset = CueSDK.HeadsetSDK;
@@ -157,27 +162,26 @@ namespace IdleRGB
                     {
                         headsetConnected = false;
                         throw new WrapperException("No Headset found");
-
                     }
 
-                    else
-                        headsetConnected = true;
+                    headsetConnected = true;
                 }
 
                 catch (WrapperException e)
                 {
                     Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
                 }
-            }
 
             else
                 headsetConnected = false;
         }
 
+        /// <summary>
+        /// Initializes mousemat, if connected.
+        /// </summary>
         private void InitializeMousemat()
         {
             if (CueSDK.IsSDKAvailable(CorsairDeviceType.Mousemat))
-            {
                 try
                 {
                     corsairMousemat = CueSDK.MousematSDK;
@@ -186,27 +190,24 @@ namespace IdleRGB
                     {
                         mousematConnected = false;
                         throw new WrapperException("No Mousemat found");
-
                     }
 
-                    else
-                        mousematConnected = true;
+                    mousematConnected = true;
                 }
 
                 catch (WrapperException e)
                 {
                     Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
                 }
-            }
 
             else
                 mousematConnected = false;
         }
 
         /// <summary>
-        /// Changes all LED colors except media.
+        ///     Changes all LED colors with the exception of possible media LEDs.
         /// </summary>
-        /// <param name="backgroundColor">The <see cref="System.Drawing.Color"/> for the background.</param>
+        /// <param name="backgroundColor">The <see cref="System.Drawing.Color" /> for the background.</param>
         public void ChangeLeds(Color backgroundColor)
         {
             try
@@ -217,19 +218,19 @@ namespace IdleRGB
 
                     if (enableMedia)
                     {
-                        ListLedGroup stop = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Stop);
+                        var stop = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Stop);
                         stop.Brush = new SolidColorBrush(stopColor);
 
-                        ListLedGroup scanPreviousTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanPreviousTrack);
+                        var scanPreviousTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanPreviousTrack);
                         scanPreviousTrack.Brush = new SolidColorBrush(prevColor);
 
-                        ListLedGroup playPause = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.PlayPause);
+                        var playPause = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.PlayPause);
                         playPause.Brush = new SolidColorBrush(playPauseColor);
 
-                        ListLedGroup scanNextTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanNextTrack);
+                        var scanNextTrack = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.ScanNextTrack);
                         scanNextTrack.Brush = new SolidColorBrush(nextColor);
 
-                        ListLedGroup mute = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Mute);
+                        var mute = new ListLedGroup(corsairKeyboard, CorsairKeyboardLedId.Mute);
                         mute.Brush = new SolidColorBrush(muteColor);
                     }
 
@@ -238,7 +239,7 @@ namespace IdleRGB
 
                 if (mouseConnected)
                 {
-                    IEnumerator<CorsairLed> mouseLeds = corsairMouse.GetEnumerator();
+                    var mouseLeds = corsairMouse.GetEnumerator();
 
                     while (mouseLeds.MoveNext())
                         mouseLeds.Current.Color = backgroundColor;
@@ -246,9 +247,9 @@ namespace IdleRGB
                     corsairMouse.Update();
                 }
 
-                if(headsetConnected)
+                if (headsetConnected)
                 {
-                    IEnumerator<CorsairLed> headsetLeds = corsairHeadset.GetEnumerator();
+                    var headsetLeds = corsairHeadset.GetEnumerator();
 
                     while (headsetLeds.MoveNext())
                         headsetLeds.Current.Color = backgroundColor;
@@ -258,7 +259,7 @@ namespace IdleRGB
 
                 if (mousematConnected)
                 {
-                    IEnumerator<CorsairLed> mousematLeds = corsairMousemat.GetEnumerator();
+                    var mousematLeds = corsairMousemat.GetEnumerator();
 
                     while (mousematLeds.MoveNext())
                         mousematLeds.Current.Color = backgroundColor;
@@ -274,7 +275,7 @@ namespace IdleRGB
         }
 
         /// <summary>
-        /// Resets all LEDs.
+        ///     Releases control back to Corsair CUE.
         /// </summary>
         public void ResetLeds()
         {
@@ -283,7 +284,7 @@ namespace IdleRGB
                 CueSDK.Reinitialize();
             }
 
-            catch(WrapperException e)
+            catch (WrapperException e)
             {
                 Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
             }

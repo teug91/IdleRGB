@@ -1,31 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
-using System.Diagnostics;
 
 namespace IdleRGB
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
         private TaskbarIcon notifyIcon;
 
+        /// <summary>
+        /// Creates tray icon and starts listening for input.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
 
-            Input input = new Input();
+            var input = new Input();
         }
 
+        /// <summary>
+        /// Makes sure tray icon is removed when application exits.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnExit(ExitEventArgs e)
         {
             notifyIcon.Dispose();

@@ -1,75 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
+using IdleRGB.Properties;
+using Application = System.Windows.Forms.Application;
 
 namespace IdleRGB
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class SettingsWindow : ToolWindow
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SettingsWindow" /> class.
+        /// </summary>
         public SettingsWindow()
         {
             InitializeComponent();
 
-            TimeSpan it = Properties.Settings.Default.idleTime;
-
-            InitializeComboBox(hoursComboBox, 24);
-            InitializeComboBox(minutesComboBox, 60);
-            InitializeComboBox(secondsComboBox, 60);
+            InitializeComboBox(hoursComboBox, 23);
+            InitializeComboBox(minutesComboBox, 59);
+            InitializeComboBox(secondsComboBox, 59);
 
             LoadSettings();
         }
 
-        public void LoadSettings()
+        /// <summary>
+        ///     Changes checkbox values to current idleTime.
+        /// </summary>
+        private void LoadSettings()
         {
-            TimeSpan it = Properties.Settings.Default.idleTime;
+            var it = Settings.Default.idleTime;
 
             hoursComboBox.SelectedItem = it.Hours;
             minutesComboBox.SelectedItem = it.Minutes;
             secondsComboBox.SelectedItem = it.Seconds;
         }
 
+        /// <summary>
+        ///     Initializes ComboBox.
+        /// </summary>
+        /// <param name="comboBox"></param>
+        /// <param name="upperLimit"></param>
         private void InitializeComboBox(ComboBox comboBox, int upperLimit)
         {
-            for (int i = 0; i <= upperLimit; i++)
+            for (var i = 0; i <= upperLimit; i++)
                 comboBox.Items.Add(i);
         }
 
+        /// <summary>
+        ///     Restarts application with new idleTime.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
-            int h = (int)hoursComboBox.SelectedItem;
-            int m = (int)minutesComboBox.SelectedItem;
-            int s = (int)secondsComboBox.SelectedItem;
+            var h = (int) hoursComboBox.SelectedItem;
+            var m = (int) minutesComboBox.SelectedItem;
+            var s = (int) secondsComboBox.SelectedItem;
 
-            TimeSpan it = new TimeSpan(h, m, s);
+            var it = new TimeSpan(h, m, s);
 
             if (!it.Equals(new TimeSpan(0, 0, 0)))
             {
-                Properties.Settings.Default.idleTime = it;
-                Properties.Settings.Default.Save();
+                Settings.Default.idleTime = it;
+                Settings.Default.Save();
 
-                Debug.WriteLine("idleTime = " + Properties.Settings.Default.idleTime.ToString());
+                Debug.WriteLine("idleTime = " + Settings.Default.idleTime);
 
                 Close();
-                System.Windows.Forms.Application.Restart();
-                Application.Current.Shutdown();
+                Application.Restart();
+                System.Windows.Application.Current.Shutdown();
             }
         }
 
+
+        /// <summary>
+        /// Closes window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();

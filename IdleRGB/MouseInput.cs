@@ -4,16 +4,15 @@ namespace IdleRGB
 {
     public class MouseInput : IDisposable
     {
-        public event EventHandler<EventArgs> MouseMoved;
+        private const int WH_MOUSE_LL = 14;
 
-        private WindowsHookHelper.HookDelegate mouseDelegate;
-        private IntPtr mouseHandle;
-        private const Int32 WH_MOUSE_LL = 14;
+        private readonly WindowsHookHelper.HookDelegate mouseDelegate;
+        private readonly IntPtr mouseHandle;
 
         private bool disposed;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MouseInput"/> class.
+        ///     Initializes a new instance of the <see cref="MouseInput" /> class.
         /// </summary>
         public MouseInput()
         {
@@ -21,20 +20,21 @@ namespace IdleRGB
             mouseHandle = WindowsHookHelper.SetWindowsHookEx(WH_MOUSE_LL, mouseDelegate, IntPtr.Zero, 0);
         }
 
-        private IntPtr MouseHookDelegate(Int32 Code, IntPtr wParam, IntPtr lParam)
-        {
-            if (Code < 0)
-                return WindowsHookHelper.CallNextHookEx(mouseHandle, Code, wParam, lParam);
-
-            if (MouseMoved != null)
-                MouseMoved(this, new EventArgs());
-
-            return WindowsHookHelper.CallNextHookEx(mouseHandle, Code, wParam, lParam);
-        }
-
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        public event EventHandler<EventArgs> MouseMoved;
+
+        private IntPtr MouseHookDelegate(int code, IntPtr wParam, IntPtr lParam)
+        {
+            if (code < 0)
+                return WindowsHookHelper.CallNextHookEx(mouseHandle, code, wParam, lParam);
+
+            MouseMoved?.Invoke(this, new EventArgs());
+
+            return WindowsHookHelper.CallNextHookEx(mouseHandle, code, wParam, lParam);
         }
 
         protected virtual void Dispose(bool disposing)

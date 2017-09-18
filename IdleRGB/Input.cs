@@ -1,58 +1,60 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Timers;
-using System.IO;
 using System.Drawing;
+using System.Timers;
 using System.Windows.Input;
+using IdleRGB.Properties;
 
 namespace IdleRGB
 {
-    class Input
+    /// <summary>
+    ///     Checks for input.
+    /// </summary>
+    internal class Input
     {
-        KeyboardInput keyboard;
-        MouseInput mouse;
-        LedChanger idle;
-
-        DateTime lastInput;
-
-        // Settings
-        TimeSpan idleTime;
-        Color idleColor;
-        Color capsColor;
-
-        bool inIdle = false;
-        bool inCaps = false;
+        private readonly LedChanger idle;
+        private readonly Color capsColor;
+        private readonly Color idleColor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Input"/> class.
+        ///     Amount of time before changing to idleColor.
+        /// </summary>
+        private readonly TimeSpan idleTime;
+
+        private bool inCaps;
+        private bool inIdle;
+
+        private DateTime lastInput;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Input" /> class.
         /// </summary>
         public Input()
         {
             lastInput = DateTime.Now;
-            idleTime = Properties.Settings.Default.idleTime;
+            idleTime = Settings.Default.idleTime;
 
-            keyboard = new KeyboardInput();
+            var keyboard = new KeyboardInput();
             keyboard.KeyBoardKeyPressed += InputAction;
 
-            mouse = new MouseInput();
+            var mouse = new MouseInput();
             mouse.MouseMoved += InputAction;
 
             idle = new LedChanger();
 
-            idleColor = Properties.Settings.Default.idleColor;
-            capsColor = Properties.Settings.Default.capsColor;
+            idleColor = Settings.Default.idleColor;
+            capsColor = Settings.Default.capsColor;
 
             InitTimer();
         }
 
         /// <summary>
-        /// Updates last input and deactivates idle.
+        ///     Updates last input and deactivates idle.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        void InputAction(object sender, EventArgs e)
+        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+        private void InputAction(object sender, EventArgs e)
         {
-            bool capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
+            var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
 
             // Checking if in idle
             if (inIdle)
@@ -71,13 +73,13 @@ namespace IdleRGB
                 inIdle = false;
             }
 
-            else if(!capsToggled && inCaps)
+            else if (!capsToggled && inCaps)
             {
                 idle.ResetLeds();
                 inCaps = false;
             }
 
-            else if(capsToggled && !inCaps)
+            else if (capsToggled && !inCaps)
             {
                 idle.ChangeLeds(capsColor);
                 inCaps = true;
@@ -88,30 +90,26 @@ namespace IdleRGB
         }
 
         /// <summary>
-        /// Checks if enough time without input has passed.
+        ///     Checks if enough time without input has passed.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Timers.ElapsedEventArgs"/> instance containing the event data.</param>
-        void Timer1_Tick(object sender, ElapsedEventArgs e)
+        /// <param name="e">The <see cref="System.Timers.ElapsedEventArgs" /> instance containing the event data.</param>
+        private void Timer1_Tick(object sender, ElapsedEventArgs e)
         {
             if (!inIdle)
-            {
-                // Checks if enough time has passed to put in idle
                 if (DateTime.Now.Subtract(lastInput) > idleTime)
                 {
                     idle.ChangeLeds(idleColor);
                     inIdle = true;
                 }
-            }
         }
 
         /// <summary>
-        /// Initiates timer.
+        ///     Initiates timer.
         /// </summary>
-        void InitTimer()
+        private void InitTimer()
         {
-            System.Timers.Timer timer1;
-            timer1 = new System.Timers.Timer();
+            Timer timer1 = new Timer();
             timer1.Elapsed += Timer1_Tick;
             timer1.Interval = 1000;
             timer1.Enabled = true;

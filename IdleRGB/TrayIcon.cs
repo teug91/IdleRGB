@@ -1,25 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hardcodet.Wpf.TaskbarNotification;
-using System.Windows.Controls;
-using IdleRGB.Properties;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows;
-using System.IO;
-using System.Windows.Markup;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace IdleRGB
 {
-    class TrayIcon
+    internal class TrayIcon
     {
         /// <summary>
-        /// Shows a window, if none is already open.
+        ///     Shows a window, if none is already open.
         /// </summary>
         public ICommand ShowWindowCommand
         {
@@ -27,7 +15,6 @@ namespace IdleRGB
             {
                 return new DelegateCommand
                 {
-                    //CanExecuteFunc = () => Application.Current.MainWindow == null || !Application.Current.MainWindow.IsFocused,
                     CommandAction = () =>
                     {
                         if (Application.Current.MainWindow != null)
@@ -46,19 +33,16 @@ namespace IdleRGB
         }
 
         /// <summary>
-        /// Shuts down the application.
+        ///     Shuts down the application.
         /// </summary>
         public ICommand ExitApplicationCommand
         {
-            get
-            {
-                return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() };
-            }
+            get { return new DelegateCommand {CommandAction = () => Application.Current.Shutdown()}; }
         }
     }
 
     /// <summary>
-    /// Simplistic delegate command for the demo.
+    ///     Simplistic delegate command for the demo.
     /// </summary>
     public class DelegateCommand : ICommand
     {
@@ -77,8 +61,8 @@ namespace IdleRGB
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

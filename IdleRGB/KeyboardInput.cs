@@ -4,15 +4,14 @@ namespace IdleRGB
 {
     public class KeyboardInput : IDisposable
     {
-        public event EventHandler<EventArgs> KeyBoardKeyPressed;
-
-        private WindowsHookHelper.HookDelegate keyBoardDelegate;
-        private IntPtr keyBoardHandle;
-        private const Int32 WH_KEYBOARD_LL = 13;
+        private const int WH_KEYBOARD_LL = 13;
         private bool disposed;
-        
+
+        private readonly WindowsHookHelper.HookDelegate keyBoardDelegate;
+        private readonly IntPtr keyBoardHandle;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyboardInput"/> class.
+        ///     Initializes a new instance of the <see cref="KeyboardInput" /> class.
         /// </summary>
         public KeyboardInput()
         {
@@ -21,25 +20,23 @@ namespace IdleRGB
                 WH_KEYBOARD_LL, keyBoardDelegate, IntPtr.Zero, 0);
         }
 
-        private IntPtr KeyboardHookDelegate(
-            Int32 Code, IntPtr wParam, IntPtr lParam)
-        {
-            if (Code < 0)
-            {
-                return WindowsHookHelper.CallNextHookEx(
-                    keyBoardHandle, Code, wParam, lParam);
-            }
-
-            if (KeyBoardKeyPressed != null)
-                KeyBoardKeyPressed(this, new EventArgs());
-
-            return WindowsHookHelper.CallNextHookEx(
-                keyBoardHandle, Code, wParam, lParam);
-        }
-
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        public event EventHandler<EventArgs> KeyBoardKeyPressed;
+
+        private IntPtr KeyboardHookDelegate(int code, IntPtr wParam, IntPtr lParam)
+        {
+            if (code < 0)
+                return WindowsHookHelper.CallNextHookEx(
+                    keyBoardHandle, code, wParam, lParam);
+
+            KeyBoardKeyPressed?.Invoke(this, new EventArgs());
+
+            return WindowsHookHelper.CallNextHookEx(
+                keyBoardHandle, code, wParam, lParam);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -47,10 +44,8 @@ namespace IdleRGB
             if (!disposed)
             {
                 if (keyBoardHandle != IntPtr.Zero)
-                {
                     WindowsHookHelper.UnhookWindowsHookEx(
                         keyBoardHandle);
-                }
 
                 disposed = true;
             }
