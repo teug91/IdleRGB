@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Input;
@@ -14,6 +15,8 @@ namespace IdleRGB
         private readonly LedChanger idle;
         private readonly Color capsColor;
         private readonly Color idleColor;
+        private KeyboardInput keyboard;
+        private MouseInput mouse;
 
         /// <summary>
         ///     Amount of time before changing to idleColor.
@@ -33,10 +36,10 @@ namespace IdleRGB
             lastInput = DateTime.Now;
             idleTime = Settings.Default.idleTime;
 
-            var keyboard = new KeyboardInput();
+            keyboard = new KeyboardInput();
             keyboard.KeyBoardKeyPressed += InputAction;
 
-            var mouse = new MouseInput();
+            mouse = new MouseInput();
             mouse.MouseMoved += InputAction;
 
             idle = new LedChanger();

@@ -15,8 +15,8 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_13BB25406F627EDB77E91C97E1CD11A9"
-        "OwnerKey" = "8:_38B5221F011D4ABE8041D376F8497978"
+        "MsmKey" = "8:_122D085878D843E9B2A2EE80781FF3F9"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -45,12 +45,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EF6D33C2E594417E915B55F7FF55BC05"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_FA0AED761CFB10F1ED230D6F919BE319"
         "OwnerKey" = "8:_38B5221F011D4ABE8041D376F8497978"
         "MsmSig" = "8:_UNDEFINED"
@@ -59,12 +53,6 @@
         {
         "MsmKey" = "8:_FB294F7485BC250434A4A7C867ACA2AC"
         "OwnerKey" = "8:_38B5221F011D4ABE8041D376F8497978"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_FA0AED761CFB10F1ED230D6F919BE319"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -88,7 +76,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_13BB25406F627EDB77E91C97E1CD11A9"
+        "OwnerKey" = "8:_FA0AED761CFB10F1ED230D6F919BE319"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -109,6 +97,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -125,6 +129,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -154,21 +174,10 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_13BB25406F627EDB77E91C97E1CD11A9"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_122D085878D843E9B2A2EE80781FF3F9"
             {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-                "ScatterAssemblies"
-                {
-                    "_13BB25406F627EDB77E91C97E1CD11A9"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Net.Http.dll"
-            "TargetName" = "8:"
+            "SourcePath" = "8:..\\IdleRGB\\ReadMe.txt"
+            "TargetName" = "8:ReadMe.txt"
             "Tag" = "8:"
             "Folder" = "8:_E9B8790AC4164065BD19253AF2DB0FDC"
             "Condition" = "8:"
@@ -182,7 +191,7 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2A89A83D418404B90654104A56D25606"
@@ -242,26 +251,6 @@
             "TargetName" = "8:CUESDK_2015.dll"
             "Tag" = "8:"
             "Folder" = "8:_7D08A991844D4574BE1260588DA43F2A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EF6D33C2E594417E915B55F7FF55BC05"
-            {
-            "SourcePath" = "8:..\\IdleRGB\\ReadMe.txt"
-            "TargetName" = "8:ReadMe.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_E9B8790AC4164065BD19253AF2DB0FDC"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -368,7 +357,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_E9B8790AC4164065BD19253AF2DB0FDC"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][ProductName]"
+            "DefaultLocation" = "8:[WindowsVolume][ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -416,15 +405,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:IdleRGB"
-        "ProductCode" = "8:{BE0E779D-E93D-4565-8DD0-4D7FCC2381A1}"
-        "PackageCode" = "8:{1DB1AF7D-9F40-4E44-BC50-8694FEB306BC}"
+        "ProductCode" = "8:{A59D3C03-AEDB-4520-A70A-D6A66CA3D1E1}"
+        "PackageCode" = "8:{785A40A8-09F6-4BB9-86E7-7DF0AB8B9C73}"
         "UpgradeCode" = "8:{74CA1E46-7859-4EB3-AD0C-AC716EB0B595}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0"
         "Manufacturer" = "8:Terje Uglebakken"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
