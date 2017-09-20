@@ -47,6 +47,12 @@ namespace IdleRGB
             idleColor = Settings.Default.idleColor;
             capsColor = Settings.Default.capsColor;
 
+            if (Keyboard.IsKeyToggled(Key.CapsLock))
+            {
+                idle.ChangeLeds(capsColor);
+                inCaps = true;
+            }
+
             InitTimer();
         }
 
