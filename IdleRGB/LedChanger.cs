@@ -23,12 +23,8 @@ namespace IdleRGB
         private readonly Color prevColor;
         private readonly Color stopColor;
 
-        private CorsairHeadset corsairHeadset;
-        private CorsairKeyboard corsairKeyboard;
-        private CorsairMouse corsairMouse;
-        private CorsairMousemat corsairMousemat;
-
         Timer initializationTimer;
+        bool isCueReady = false;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LedChanger" /> class.
@@ -44,7 +40,7 @@ namespace IdleRGB
             InitializeSDK();
 
             // Continues to look for CUE and adds devices.
-            initializationTimer = new Timer(3000);
+            initializationTimer = new Timer(10000);
             initializationTimer.Elapsed += Timer1_Tick;
             initializationTimer.Enabled = true;
             GC.KeepAlive(initializationTimer);
@@ -56,38 +52,30 @@ namespace IdleRGB
         /// </summary>
         private void InitializeSDK()
         {
-            try
+            if (CueSDK.IsSDKAvailable() && !isCueReady)
             {
-                if (CueSDK.IsInitialized)
+                isCueReady = true;
+            }
+
+            else if (CueSDK.IsSDKAvailable() && isCueReady)
+            {
+                try
                 {
-                    if (CueSDK.IsSDKAvailable(CorsairDeviceType.Keyboard))
-                        corsairKeyboard = CueSDK.KeyboardSDK;
-
-                    if (CueSDK.IsSDKAvailable(CorsairDeviceType.Mouse))
-                        corsairMouse = CueSDK.MouseSDK;
-
-                    if (CueSDK.IsSDKAvailable(CorsairDeviceType.Headset))
-                        corsairHeadset = CueSDK.HeadsetSDK;
-
-                    if (CueSDK.IsSDKAvailable(CorsairDeviceType.Mousemat))
-                        corsairMousemat = CueSDK.MousematSDK;
-
+                    CueSDK.Initialize();
                     initializationTimer.Stop();
                     initializationTimer.Dispose();
                 }
 
-                else
-                    CueSDK.Initialize();
-            }
+                catch (WrapperException e)
+                {
+                    Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+                }
 
-            catch (WrapperException e)
-            {
-                Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
-            }
+                catch (CUEException e)
+                {
+                    Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
 
-            catch (CUEException e)
-            {
-                Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
+                }
             }
         }
 
