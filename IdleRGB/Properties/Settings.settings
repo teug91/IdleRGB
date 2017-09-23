@@ -11,20 +11,5 @@
     <Setting Name="capsColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">255, 109, 63</Value>
     </Setting>
-    <Setting Name="stopColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">255, 17, 45</Value>
-    </Setting>
-    <Setting Name="prevColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">55, 171, 255</Value>
-    </Setting>
-    <Setting Name="playPauseColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">0, 255, 126</Value>
-    </Setting>
-    <Setting Name="nextColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">55, 171, 255</Value>
-    </Setting>
-    <Setting Name="muteColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">255, 174, 70</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

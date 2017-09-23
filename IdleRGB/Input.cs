@@ -1,9 +1,17 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Input;
 using IdleRGB.Properties;
+using CUE.NET;
+using CUE.NET.Devices.Generic.Enums;
+using CUE.NET.Devices.Headset;
+using CUE.NET.Devices.Keyboard;
+using CUE.NET.Devices.Mouse;
+using CUE.NET.Devices.Mousemat;
+using CUE.NET.Exceptions;
 
 namespace IdleRGB
 {
@@ -12,21 +20,21 @@ namespace IdleRGB
     /// </summary>
     internal class Input
     {
-        private readonly LedChanger idle;
-        private readonly Color capsColor;
-        private readonly Color idleColor;
+        private Color capsColor;
+        private Color idleColor;
         private KeyboardInput keyboard;
         private MouseInput mouse;
 
         /// <summary>
         ///     Amount of time before changing to idleColor.
         /// </summary>
-        private readonly TimeSpan idleTime;
+        private TimeSpan idleTime;
 
         private bool inCaps;
         private bool inIdle;
 
         private DateTime lastInput;
+        private Timer initializationTimer;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Input" /> class.
@@ -35,6 +43,7 @@ namespace IdleRGB
         {
             lastInput = DateTime.Now;
             idleTime = Settings.Default.idleTime;
+            Settings.Default.SettingsSaving += SettingSaving;
 
             keyboard = new KeyboardInput();
             keyboard.KeyBoardKeyPressed += InputAction;
@@ -42,14 +51,20 @@ namespace IdleRGB
             mouse = new MouseInput();
             mouse.MouseMoved += InputAction;
 
-            idle = new LedChanger();
+            CueSDK.PossibleX86NativePaths.Add(AppDomain.CurrentDomain.BaseDirectory + @"x86\CUESDK_2015.dll");
+            CueSDK.PossibleX64NativePaths.Add(AppDomain.CurrentDomain.BaseDirectory + @"x64\CUESDK_2015.dll");
+
+            initializationTimer = new Timer(1);
+            initializationTimer.Elapsed += CheckForCue;
+            initializationTimer.Enabled = true;
+            GC.KeepAlive(initializationTimer);
 
             idleColor = Settings.Default.idleColor;
             capsColor = Settings.Default.capsColor;
 
             if (Keyboard.IsKeyToggled(Key.CapsLock))
             {
-                idle.ChangeLeds(capsColor);
+                LedChanger.ChangeLeds(capsColor);
                 inCaps = true;
             }
 
@@ -57,7 +72,7 @@ namespace IdleRGB
         }
 
         /// <summary>
-        ///     Updates last input and deactivates idle.
+        ///     Updates last input.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
@@ -70,13 +85,13 @@ namespace IdleRGB
             {
                 if (capsToggled)
                 {
-                    idle.ChangeLeds(capsColor);
+                    LedChanger.ChangeLeds(capsColor);
                     inCaps = true;
                 }
 
                 else
                 {
-                    idle.ResetLeds();
+                    LedChanger.ResetLeds();
                 }
 
                 inIdle = false;
@@ -84,13 +99,13 @@ namespace IdleRGB
 
             else if (!capsToggled && inCaps)
             {
-                idle.ResetLeds();
+                LedChanger.ResetLeds();
                 inCaps = false;
             }
 
             else if (capsToggled && !inCaps)
             {
-                idle.ChangeLeds(capsColor);
+                LedChanger.ChangeLeds(capsColor);
                 inCaps = true;
             }
 
@@ -106,11 +121,13 @@ namespace IdleRGB
         private void Timer1_Tick(object sender, ElapsedEventArgs e)
         {
             if (!inIdle)
+            {
                 if (DateTime.Now.Subtract(lastInput) > idleTime)
                 {
-                    idle.ChangeLeds(idleColor);
+                    LedChanger.ChangeLeds(idleColor);
                     inIdle = true;
                 }
+            }
         }
 
         /// <summary>
@@ -123,6 +140,72 @@ namespace IdleRGB
             timer1.Interval = 1000;
             timer1.Enabled = true;
             GC.KeepAlive(timer1);
+        }
+
+        /// <summary>
+        ///     Loading new settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SettingSaving(object sender, CancelEventArgs e)
+        {
+            if(idleTime != Settings.Default.idleTime)
+                idleTime = Settings.Default.idleTime;
+
+            if (idleColor != Settings.Default.idleColor)
+                idleColor = Settings.Default.idleColor;
+
+            if (capsColor != Settings.Default.capsColor)
+            {
+                capsColor = Settings.Default.capsColor;
+                if(inCaps)
+                    LedChanger.ChangeLeds(capsColor);
+            }
+        }
+
+        /// <summary>
+        ///     If SDK is available, initializes after 5 seconds.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckForCue(object sender, ElapsedEventArgs e)
+        {
+            if (CueSDK.IsSDKAvailable())
+            {
+                initializationTimer.Enabled = false;
+                Debug.WriteLine("SDK is available!");
+                initializationTimer.Elapsed += InitializeSDK;
+                initializationTimer.Elapsed -= CheckForCue;
+                initializationTimer.Interval = 5000;
+                initializationTimer.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        ///     Attempts to initialize SDK.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InitializeSDK(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                CueSDK.Initialize();
+                Debug.WriteLine("SDK initialized!");
+                initializationTimer.Stop();
+                initializationTimer.Dispose();
+            }
+
+            catch (WrapperException ex)
+            {
+                Debug.WriteLine("Wrapper Exception! Message:" + ex.Message);
+            }
+
+            catch (CUEException ex)
+            {
+                Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), ex.Error));
+
+            }
         }
     }
 }
