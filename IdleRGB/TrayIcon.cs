@@ -19,7 +19,7 @@ namespace IdleRGB
                     {
                         if (Application.Current.MainWindow != null)
                         {
-                            Application.Current.MainWindow.Focus();
+                            Application.Current.MainWindow.Activate();
                         }
 
                         else

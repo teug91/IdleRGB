@@ -17,7 +17,7 @@ namespace IdleRGB
     public partial class SettingsWindow : ToolWindow
     {
         bool autoStart;
-        Color newInactiveColor;
+        Color newIdleColor;
         Color newCapsColor;
 
 
@@ -45,12 +45,15 @@ namespace IdleRGB
             hoursComboBox.SelectedItem = it.Hours;
             minutesComboBox.SelectedItem = it.Minutes;
             secondsComboBox.SelectedItem = it.Seconds;
-
+            
             Color color = Color.FromRgb(Settings.Default.idleColor.R, Settings.Default.idleColor.G, Settings.Default.idleColor.B);
-            inactiveRectangle.Fill = new SolidColorBrush(color);
+            
+            idleRectangle.Fill = new SolidColorBrush(color);
+            newIdleColor = color;
 
             color = Color.FromRgb(Settings.Default.capsColor.R, Settings.Default.capsColor.G, Settings.Default.capsColor.B);
             capsLockRectangle.Fill = new SolidColorBrush(color);
+            newCapsColor = color;
 
             InitializeAutoStartCheckbox();
         }
@@ -64,6 +67,7 @@ namespace IdleRGB
         {
             for (var i = 0; i <= upperLimit; i++)
                 comboBox.Items.Add(i);
+
         }
 
         /// <summary>
@@ -99,13 +103,15 @@ namespace IdleRGB
                 }
             }
 
-            Color color = Color.FromRgb(Settings.Default.idleColor.R, Settings.Default.idleColor.R, Settings.Default.idleColor.B);
+            Color oldColor = Color.FromRgb(Settings.Default.idleColor.R, Settings.Default.idleColor.R, Settings.Default.idleColor.B);
 
-            if(color != newInactiveColor)
-                Settings.Default.idleColor = System.Drawing.Color.FromArgb(newInactiveColor.R, newInactiveColor.G, newInactiveColor.G);
+            if (oldColor != newIdleColor)
+                Settings.Default.idleColor = System.Drawing.Color.FromArgb(newIdleColor.R, newIdleColor.G, newIdleColor.B);
 
-            if(color != newCapsColor)
-                Settings.Default.capsColor = System.Drawing.Color.FromArgb(newCapsColor.R, newCapsColor.G, newCapsColor.G);
+            oldColor = Color.FromRgb(Settings.Default.capsColor.R, Settings.Default.capsColor.G, Settings.Default.capsColor.B);
+
+            if (oldColor != newCapsColor)
+                Settings.Default.capsColor = System.Drawing.Color.FromArgb(newCapsColor.R, newCapsColor.G, newCapsColor.B);
 
             Settings.Default.Save();
             Close();
@@ -165,11 +171,11 @@ namespace IdleRGB
         }
 
         /// <summary>
-        ///     Color picker for inactive.
+        ///     Color picker for idle.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void inactiveButton_Click(object sender, RoutedEventArgs e)
+        private void idleButton_Click(object sender, RoutedEventArgs e)
         {
             if (!colorCanvas.IsVisible)
                 colorCanvas.Visibility = Visibility.Visible;
@@ -177,9 +183,8 @@ namespace IdleRGB
             else
                 setCapsButton.Visibility = Visibility.Hidden;
 
-            Color color = Color.FromRgb(Settings.Default.idleColor.R, Settings.Default.idleColor.G, Settings.Default.idleColor.B);
-            colorCanvas.SelectedColor = color;
-            setInactiveButton.Visibility = Visibility.Visible;
+            colorCanvas.SelectedColor = Color.FromRgb(newIdleColor.R, newIdleColor.G, newIdleColor.B);
+            setIdleButton.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -193,10 +198,9 @@ namespace IdleRGB
                 colorCanvas.Visibility = Visibility.Visible;
 
             else
-                setInactiveButton.Visibility = Visibility.Hidden;
+                setIdleButton.Visibility = Visibility.Hidden;
 
-            Color color = Color.FromRgb(Settings.Default.capsColor.R, Settings.Default.capsColor.G, Settings.Default.capsColor.B);
-            colorCanvas.SelectedColor = color;
+            colorCanvas.SelectedColor = Color.FromRgb(newCapsColor.R, newCapsColor.G, newCapsColor.B);
             setCapsButton.Visibility = Visibility.Visible;
         }
 
@@ -219,13 +223,14 @@ namespace IdleRGB
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SetInactiveButton_Click(object sender, RoutedEventArgs e)
+        private void SetIdleButton_Click(object sender, RoutedEventArgs e)
         {
-            setInactiveButton.Visibility = Visibility.Hidden;
+            setIdleButton.Visibility = Visibility.Hidden;
             colorCanvas.Visibility = Visibility.Hidden;
 
-            newInactiveColor = Color.FromRgb(colorCanvas.R, colorCanvas.G, colorCanvas.B);
-            inactiveRectangle.Fill = new SolidColorBrush(newInactiveColor);
+            newIdleColor = Color.FromRgb(colorCanvas.R, colorCanvas.G, colorCanvas.B);
+
+            idleRectangle.Fill = new SolidColorBrush(newIdleColor);
 
             var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
             if (capsToggled)

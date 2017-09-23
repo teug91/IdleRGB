@@ -9,7 +9,7 @@
       <Value Profile="(Default)">Black</Value>
     </Setting>
     <Setting Name="capsColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">255, 109, 63</Value>
+      <Value Profile="(Default)">Red</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -25,9 +25,6 @@ namespace IdleRGB
         private KeyboardInput keyboard;
         private MouseInput mouse;
 
-        /// <summary>
-        ///     Amount of time before changing to idleColor.
-        /// </summary>
         private TimeSpan idleTime;
 
         private bool inCaps;
@@ -135,11 +132,11 @@ namespace IdleRGB
         /// </summary>
         private void InitTimer()
         {
-            Timer timer1 = new Timer();
-            timer1.Elapsed += Timer1_Tick;
-            timer1.Interval = 1000;
-            timer1.Enabled = true;
-            GC.KeepAlive(timer1);
+            Timer timer = new Timer();
+            timer.Elapsed += Timer1_Tick;
+            timer.Interval = 1000;
+            timer.Enabled = true;
+            GC.KeepAlive(timer);
         }
 
         /// <summary>
@@ -149,18 +146,19 @@ namespace IdleRGB
         /// <param name="e"></param>
         private void SettingSaving(object sender, CancelEventArgs e)
         {
-            if(idleTime != Settings.Default.idleTime)
+            if (idleTime != Settings.Default.idleTime)
                 idleTime = Settings.Default.idleTime;
 
             if (idleColor != Settings.Default.idleColor)
                 idleColor = Settings.Default.idleColor;
 
             if (capsColor != Settings.Default.capsColor)
-            {
                 capsColor = Settings.Default.capsColor;
-                if(inCaps)
-                    LedChanger.ChangeLeds(capsColor);
-            }
+
+            if (inCaps)
+                LedChanger.ChangeLeds(capsColor);
+            else
+                LedChanger.ResetLeds();
         }
 
         /// <summary>
@@ -173,7 +171,6 @@ namespace IdleRGB
             if (CueSDK.IsSDKAvailable())
             {
                 initializationTimer.Enabled = false;
-                Debug.WriteLine("SDK is available!");
                 initializationTimer.Elapsed += InitializeSDK;
                 initializationTimer.Elapsed -= CheckForCue;
                 initializationTimer.Interval = 5000;
@@ -191,7 +188,6 @@ namespace IdleRGB
             try
             {
                 CueSDK.Initialize();
-                Debug.WriteLine("SDK initialized!");
                 initializationTimer.Stop();
                 initializationTimer.Dispose();
             }

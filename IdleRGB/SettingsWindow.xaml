@@ -18,8 +18,8 @@
             <Setter Property="Control.Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Rectangle Margin="2" SnapsToDevicePixels="true"
-                                   Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                        <Rectangle Margin="0" SnapsToDevicePixels="true"
+                                   Stroke="White"
                                    StrokeThickness="1" StrokeDashArray="1 2" />
                     </ControlTemplate>
                 </Setter.Value>
@@ -1500,9 +1500,91 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <!--**********************************Slider**************************************************-->
-
+        <SolidColorBrush x:Key="OptionMark.Static.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="OptionMark.Static.Border" Color="#FF707070"/>
+        <Style x:Key="OptionMarkFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--*************************************************Slider*****************************************************************-->
+        
+        <!--*************************************************CheckBox***************************************************************-->
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="#FF13181E"/>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="#FFACB1B7"/>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="White"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FFBCBCBC"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF707070"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="Black"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FFACB1B7"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="White"/>
+        <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="White"/>
+        <Style x:Key="CheckBoxStyle" TargetType="{x:Type CheckBox}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="#FF1D252D"/>
+            <Setter Property="BorderBrush" Value="#FF838B93"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="checkBoxBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Grid x:Name="markGrid">
+                                    <Path x:Name="optionMark" Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z " Fill="{StaticResource OptionMark.Static.Glyph}" Margin="1" Opacity="0" Stretch="None"/>
+                                    <Rectangle x:Name="indeterminateMark" Fill="{StaticResource OptionMark.Static.Glyph}" Margin="2" Opacity="0"/>
+                                </Grid>
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter" Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                                <Setter Property="Padding" Value="4,-1,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
+                                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Disabled.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
+                                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
+                                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--*************************************************CheckBox***************************************************************-->
     </local:ToolWindow.Resources>
+
     <Grid>
         <Label Content="Idle time" HorizontalAlignment="Left" Margin="22,14,0,0"
                VerticalAlignment="Top" FontSize="22">
@@ -1537,32 +1619,32 @@
                   BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33"
                   VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False"
                   ScrollViewer.VerticalScrollBarVisibility="Visible" TabIndex="2" />
-        <Button x:Name="saveButton" Content="Save" HorizontalAlignment="Right" Margin="0,0,140,10"
+        <Button x:Name="saveButton" Content="Save" HorizontalAlignment="Right" Margin="0,0,140,20"
                 VerticalAlignment="Bottom" Width="90" Style="{DynamicResource ButtonStyle}" FontSize="15"
-                Foreground="White" Height="30" Click="SaveButton_Click" TabIndex="3" />
-        <Button x:Name="cancelButton" Content="Cancel" Margin="0,0,30,10"
+                Foreground="White" Height="30" Click="SaveButton_Click" TabIndex="8" />
+        <Button x:Name="cancelButton" Content="Cancel" Margin="0,0,30,20"
                 VerticalAlignment="Bottom" Width="90" Style="{DynamicResource ButtonStyle}" FontSize="15"
-                Foreground="White" Height="30" Click="CancelButton_Click" TabIndex="4" HorizontalAlignment="Right" />
+                Foreground="White" Height="30" Click="CancelButton_Click" TabIndex="9" HorizontalAlignment="Right" />
 
-        <Button x:Name="inactiveButton" Height="30" Margin="30,0,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="inactiveButton_Click">
+        <Button x:Name="idleButton" Height="30" Margin="30,0,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="idleButton_Click" TabIndex="3">
             <StackPanel Orientation="Horizontal" SnapsToDevicePixels="True">
-                <Rectangle x:Name="inactiveRectangle" Width="16" Height="16" Fill="Black" SnapsToDevicePixels="True" Margin="6,0,0,0"/>
+                <Rectangle x:Name="idleRectangle" Width="16" Height="16" Fill="Blue" SnapsToDevicePixels="True" Margin="6,0,0,0" Stroke="#FF838B93"/>
                 <TextBlock Margin="10,0,0,0" FontSize="15" VerticalAlignment="Center" Foreground="White" SnapsToDevicePixels="True"><Run Text="Idle"/></TextBlock>
             </StackPanel>
         </Button>
 
-        <Button x:Name="capsButton" Height="30" Margin="30,100,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="CapsButton_Click">
+        <Button x:Name="capsButton" Height="30" Margin="30,100,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="CapsButton_Click" TabIndex="5">
             <StackPanel Orientation="Horizontal" SnapsToDevicePixels="True">
-                <Rectangle x:Name="capsLockRectangle" Width="16" Height="16" Fill="Red" SnapsToDevicePixels="True" Margin="6,0,0,0"/>
+                <Rectangle x:Name="capsLockRectangle" Width="16" Height="16" Fill="Red" SnapsToDevicePixels="True" Margin="6,0,0,0" Stroke="#FF838B93"/>
                 <TextBlock Margin="10,0,0,0" FontSize="15" VerticalAlignment="Center" Foreground="White" SnapsToDevicePixels="True"><Run Text="Caps lock"/></TextBlock>
             </StackPanel>
         </Button>
-        <CheckBox x:Name="autostartCheckbox" Content="Run IdleRGB at system startup" HorizontalAlignment="Left" Margin="30,0,0,10" VerticalAlignment="Bottom" Foreground="White" FontSize="14" IsChecked="True" Padding="4,-2,0,0" />
-        <xctk:ColorCanvas x:Name="colorCanvas" HorizontalAlignment="Right" UsingAlphaChannel="False" Height="236" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Style="{DynamicResource ColorCanvasStyle1}" SelectedColorChanged="ColorCanvas_SelectedColorChanged" Margin="0,58,30,0" Visibility="Hidden" />
-        <Button x:Name="setInactiveButton" Content="Set" Margin="170,0,0,0" Width="60" Style="{DynamicResource ButtonStyle}" FontSize="15"
-            Foreground="White" Height="30" TabIndex="4" HorizontalAlignment="Left" Click="SetInactiveButton_Click" Visibility="Hidden"/>
+        <CheckBox x:Name="autostartCheckbox" Content="Run IdleRGB at system startup" HorizontalAlignment="Left" Margin="30,0,0,20" VerticalAlignment="Bottom" Foreground="White" FontSize="14" IsChecked="True" Style="{DynamicResource CheckBoxStyle}" Width="212" VerticalContentAlignment="Center" />
+        <xctk:ColorCanvas x:Name="colorCanvas" HorizontalAlignment="Right" UsingAlphaChannel="False" Height="236" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Style="{DynamicResource ColorCanvasStyle1}" SelectedColorChanged="ColorCanvas_SelectedColorChanged" Margin="0,58,30,0" Visibility="Hidden" TabIndex="7" />
+        <Button x:Name="setIdleButton" Content="Set" Margin="170,0,0,0" Width="60" Style="{DynamicResource ButtonStyle}" FontSize="15"
+            Foreground="White" Height="30" TabIndex="4" HorizontalAlignment="Left" Click="SetIdleButton_Click" Visibility="Hidden"/>
         <Button x:Name="setCapsButton" Content="Set" Margin="170,100,0,0" Width="60" Style="{DynamicResource ButtonStyle}" FontSize="15"
-            Foreground="White" Height="30" TabIndex="4" HorizontalAlignment="Left" Click="SetCapsButton_Click" Visibility="Hidden"/>
+            Foreground="White" Height="30" TabIndex="6" HorizontalAlignment="Left" Click="SetCapsButton_Click" Visibility="Hidden"/>
 
     </Grid>
 </local:ToolWindow>
