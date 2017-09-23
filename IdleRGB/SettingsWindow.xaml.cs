@@ -119,6 +119,11 @@ namespace IdleRGB
         /// <param name="e"></param>
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
+            if (capsToggled)
+                LedChanger.ChangeLeds(Settings.Default.capsColor);
+            else
+                LedChanger.ResetLeds();
             Close();
         }
 
