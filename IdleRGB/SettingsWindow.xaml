@@ -1586,7 +1586,7 @@
     </local:ToolWindow.Resources>
 
     <Grid>
-        <Label Content="Idle time" HorizontalAlignment="Left" Margin="22,14,0,0"
+        <Label Content="Idle time" HorizontalAlignment="Left" Margin="24,14,0,0"
                VerticalAlignment="Top" FontSize="22">
             <Label.Foreground>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}" />
@@ -1595,7 +1595,7 @@
         <ComboBox x:Name="hoursComboBox" HorizontalAlignment="Left" Margin="30,64,0,0" Width="80"
                   Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White" Background="#FF1D252D"
                   BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33"
-                  VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False"
+                  VerticalAlignment="Top" MaxDropDownHeight="300" ScrollViewer.CanContentScroll="False"
                   ScrollViewer.VerticalScrollBarVisibility="Visible" TabIndex="0" />
         <Label Content=":" HorizontalAlignment="Left" Margin="115,66,0,0" VerticalAlignment="Top"
                FontSize="16" Padding="10,5">
@@ -1606,7 +1606,7 @@
         <ComboBox x:Name="minutesComboBox" HorizontalAlignment="Left" Margin="143,64,0,0" Width="80"
                   Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White" Background="#FF1D252D"
                   BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33"
-                  VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False"
+                  VerticalAlignment="Top" MaxDropDownHeight="300" ScrollViewer.CanContentScroll="False"
                   ScrollViewer.VerticalScrollBarVisibility="Visible" TabIndex="1" />
         <Label Content=":" HorizontalAlignment="Left" Margin="228,66,0,0" VerticalAlignment="Top"
                FontSize="16" Padding="10,5">
@@ -1617,7 +1617,7 @@
         <ComboBox x:Name="secondsComboBox" HorizontalAlignment="Left" Margin="256,64,0,0" Width="80"
                   Style="{DynamicResource ComboBoxStyleFlat}" FontSize="16" Foreground="White" Background="#FF1D252D"
                   BorderBrush="{x:Null}" ItemContainerStyle="{DynamicResource ComboBoxItemStyle}" Height="33"
-                  VerticalAlignment="Top" MaxDropDownHeight="200" ScrollViewer.CanContentScroll="False"
+                  VerticalAlignment="Top" MaxDropDownHeight="300" ScrollViewer.CanContentScroll="False"
                   ScrollViewer.VerticalScrollBarVisibility="Visible" TabIndex="2" />
         <Button x:Name="saveButton" Content="Save" HorizontalAlignment="Right" Margin="0,0,140,20"
                 VerticalAlignment="Bottom" Width="90" Style="{DynamicResource ButtonStyle}" FontSize="15"
@@ -1626,14 +1626,14 @@
                 VerticalAlignment="Bottom" Width="90" Style="{DynamicResource ButtonStyle}" FontSize="15"
                 Foreground="White" Height="30" Click="CancelButton_Click" TabIndex="9" HorizontalAlignment="Right" />
 
-        <Button x:Name="idleButton" Height="30" Margin="30,0,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="idleButton_Click" TabIndex="3">
+        <Button x:Name="idleButton" Height="30" Margin="30,20,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="idleButton_Click" TabIndex="3">
             <StackPanel Orientation="Horizontal" SnapsToDevicePixels="True">
                 <Rectangle x:Name="idleRectangle" Width="16" Height="16" Fill="Blue" SnapsToDevicePixels="True" Margin="6,0,0,0" Stroke="#FF838B93"/>
                 <TextBlock Margin="10,0,0,0" FontSize="15" VerticalAlignment="Center" Foreground="White" SnapsToDevicePixels="True"><Run Text="Idle"/></TextBlock>
             </StackPanel>
         </Button>
 
-        <Button x:Name="capsButton" Height="30" Margin="30,100,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="CapsButton_Click" TabIndex="5">
+        <Button x:Name="capsButton" Height="30" Margin="30,120,0,0" Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" Style="{DynamicResource ButtonStyle}" Click="CapsButton_Click" TabIndex="5">
             <StackPanel Orientation="Horizontal" SnapsToDevicePixels="True">
                 <Rectangle x:Name="capsLockRectangle" Width="16" Height="16" Fill="Red" SnapsToDevicePixels="True" Margin="6,0,0,0" Stroke="#FF838B93"/>
                 <TextBlock Margin="10,0,0,0" FontSize="15" VerticalAlignment="Center" Foreground="White" SnapsToDevicePixels="True"><Run Text="Caps lock"/></TextBlock>
@@ -1641,10 +1641,16 @@
         </Button>
         <CheckBox x:Name="autostartCheckbox" Content="Run IdleRGB at system startup" HorizontalAlignment="Left" Margin="30,0,0,20" VerticalAlignment="Bottom" Foreground="White" FontSize="14" IsChecked="True" Style="{DynamicResource CheckBoxStyle}" Width="212" VerticalContentAlignment="Center" />
         <xctk:ColorCanvas x:Name="colorCanvas" HorizontalAlignment="Right" UsingAlphaChannel="False" Height="236" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Style="{DynamicResource ColorCanvasStyle1}" SelectedColorChanged="ColorCanvas_SelectedColorChanged" Margin="0,58,30,0" Visibility="Hidden" TabIndex="7" />
-        <Button x:Name="setIdleButton" Content="Set" Margin="170,0,0,0" Width="60" Style="{DynamicResource ButtonStyle}" FontSize="15"
+        <Button x:Name="setIdleButton" Content="Set" Margin="170,20,0,0" Width="60" Style="{DynamicResource ButtonStyle}" FontSize="15"
             Foreground="White" Height="30" TabIndex="4" HorizontalAlignment="Left" Click="SetIdleButton_Click" Visibility="Hidden"/>
-        <Button x:Name="setCapsButton" Content="Set" Margin="170,100,0,0" Width="60" Style="{DynamicResource ButtonStyle}" FontSize="15"
+        <Button x:Name="setCapsButton" Content="Set" Margin="170,120,0,0" Width="60" Style="{DynamicResource ButtonStyle}" FontSize="15"
             Foreground="White" Height="30" TabIndex="6" HorizontalAlignment="Left" Click="SetCapsButton_Click" Visibility="Hidden"/>
+        <Label Content="Colors" HorizontalAlignment="Left" Margin="24,140,0,0"
+            VerticalAlignment="Top" FontSize="22">
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}" />
+            </Label.Foreground>
+        </Label>
 
     </Grid>
 </local:ToolWindow>
