@@ -18,7 +18,7 @@ namespace IdleRGB
     /// <summary>
     ///     Checks for input.
     /// </summary>
-    internal class Input
+    internal class Main
     {
         private Color capsColor;
         private Color idleColor;
@@ -34,9 +34,9 @@ namespace IdleRGB
         private Timer initializationTimer;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Input" /> class.
+        ///     Initializes a new instance of the <see cref="Main" /> class.
         /// </summary>
-        public Input()
+        public Main()
         {
             lastInput = DateTime.Now;
             idleTime = Settings.Default.idleTime;
@@ -69,7 +69,7 @@ namespace IdleRGB
         }
 
         /// <summary>
-        ///     Updates last input.
+        ///     Updates last input and changes LEDs if needed.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
@@ -77,7 +77,6 @@ namespace IdleRGB
         {
             var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
 
-            // Checking if in idle
             if (inIdle)
             {
                 if (capsToggled)

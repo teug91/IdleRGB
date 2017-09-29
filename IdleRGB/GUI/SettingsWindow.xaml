@@ -10,7 +10,7 @@
     x:Class="IdleRGB.SettingsWindow"
     mc:Ignorable="d"
     Title="Settings" Height="423" Width="660" Background="#FF303D4B" WindowStyle="ToolWindow" ResizeMode="NoResize"
-    Visibility="Visible" Icon="Resources/bulb.ico">
+    Visibility="Visible" Icon="/IdleRGB;component/Resources/bulb.ico">
 
     <local:ToolWindow.Resources>
 

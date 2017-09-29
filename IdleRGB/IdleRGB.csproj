@@ -128,15 +128,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GUI\TrayIcon.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindow.cs" />
-    <Compile Include="TrayIcon.cs" />
-    <Compile Include="WindowsHookHelper.cs" />
-    <Page Include="SettingsWindow.xaml">
+    <Compile Include="GUI\ToolWindow.cs" />
+    <Compile Include="Input\WindowsHookHelper.cs" />
+    <Page Include="GUI\SettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -144,20 +144,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Input.cs" />
-    <Compile Include="KeyboardInput.cs" />
-    <Compile Include="LedChanger.cs" />
-    <Compile Include="SettingsWindow.xaml.cs">
+    <Compile Include="Core\Main.cs" />
+    <Compile Include="Input\KeyboardInput.cs" />
+    <Compile Include="Core\LedChanger.cs" />
+    <Compile Include="GUI\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TrayIconResources.xaml">
+    <Page Include="GUI\TrayIconResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MouseInput.cs" />
+    <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
