@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Input;
@@ -30,6 +29,7 @@ namespace IdleRGB.Core
         internal Main()
         {
             var settings = SettingsManager.GetSettings();
+            SettingsManager.GetAutoStart();
 
             lastInput = DateTime.Now;
             idleTime = settings.Item1;
