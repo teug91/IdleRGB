@@ -93,7 +93,7 @@ namespace IdleRGB
             var newIdleColor = System.Drawing.Color.FromArgb(idleColor.R, idleColor.G, idleColor.B);
             var newCapsColor = System.Drawing.Color.FromArgb(capsColor.R, capsColor.G, capsColor.B);
 
-            SettingsManager.SaveSettings(idleTime, newIdleColor, newCapsColor, autoStart);
+            SettingsManager.SaveSettings(newTime, newIdleColor, newCapsColor, autoStart);
             Close();
         }
 
