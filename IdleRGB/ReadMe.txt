@@ -14,3 +14,4 @@ Credit:
 CUE.NET - C# (.NET) Wrapper library around the Corsair CUE SDK: https://github.com/DarthAffe/CUE.NET
 Hardcodet.NotifyIcon.Wpf - Used for tray icon: http://www.hardcodet.net/wpf-notifyicon
 Extended WPF Toolkit™ - Used for color canvas: https://github.com/xceedsoftware/wpftoolkit
+Joel Abrahamsson's post - Code for detecting keyboard and mouse input - https://http://joelabrahamsson.com/detecting-mouse-and-keyboard-input-with-net/t

@@ -4,15 +4,9 @@ using System.Drawing;
 using System.Collections.Generic;
 using CUE.NET;
 using CUE.NET.Devices.Generic.Enums;
-using CUE.NET.Devices.Headset;
-using CUE.NET.Devices.Keyboard;
-using CUE.NET.Devices.Mouse;
-using CUE.NET.Devices.Mousemat;
 using CUE.NET.Exceptions;
-using IdleRGB.Properties;
-using System.Timers;
 
-namespace IdleRGB
+namespace IdleRGB.Core
 {
     internal static class LedChanger
     {
@@ -22,46 +16,46 @@ namespace IdleRGB
         /// <param name="newColor">The new <see cref="System.Drawing.Color" />.</param>
         public static void ChangeLeds(Color newColor)
         {
-            if (CueSDK.IsInitialized)
+            if (!CueSDK.IsInitialized)
+                return;
+
+            // No changes are done to these LEDs.
+            List<CorsairLedId> skipLeds = new List<CorsairLedId>();
+            skipLeds.Add(CorsairLedId.Stop);
+            skipLeds.Add(CorsairLedId.ScanPreviousTrack);
+            skipLeds.Add(CorsairLedId.PlayPause);
+            skipLeds.Add(CorsairLedId.ScanNextTrack);
+            skipLeds.Add(CorsairLedId.Mute);
+            skipLeds.Add(CorsairLedId.Brightness);
+            skipLeds.Add(CorsairLedId.WinLock);
+
+            var initializedDevices = CueSDK.InitializedDevices.GetEnumerator();
+
+            while (initializedDevices.MoveNext())
             {
-                // No changes are done to these LEDs.
-                List<CorsairLedId> skipLeds = new List<CorsairLedId>();
-                skipLeds.Add(CorsairLedId.Stop);
-                skipLeds.Add(CorsairLedId.ScanPreviousTrack);
-                skipLeds.Add(CorsairLedId.PlayPause);
-                skipLeds.Add(CorsairLedId.ScanNextTrack);
-                skipLeds.Add(CorsairLedId.Mute);
-                skipLeds.Add(CorsairLedId.Brightness);
-                skipLeds.Add(CorsairLedId.WinLock);
-
-                var initializedDevices = CueSDK.InitializedDevices.GetEnumerator();
-
-                while (initializedDevices.MoveNext())
+                try
                 {
-                    try
-                    {
-                        var leds = initializedDevices.Current.GetEnumerator();
+                    var leds = initializedDevices.Current.GetEnumerator();
 
-                        while (leds.MoveNext())
+                    while (leds.MoveNext())
+                    {
+                        if (!skipLeds.Contains(leds.Current.Id))
                         {
-                            if (!skipLeds.Contains(leds.Current.Id))
-                            {
-                                leds.Current.Color = newColor;
-                            }
+                            leds.Current.Color = newColor;
                         }
-
-                        initializedDevices.Current.Update();
                     }
 
-                    catch (WrapperException e)
-                    {
-                        Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
-                    }
+                    initializedDevices.Current.Update();
+                }
 
-                    catch (CUEException e)
-                    {
-                        Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
-                    }
+                catch (WrapperException e)
+                {
+                    Debug.WriteLine("Wrapper Exception! Message:" + e.Message);
+                }
+
+                catch (CUEException e)
+                {
+                    Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
                 }
             }
         }
@@ -74,7 +68,9 @@ namespace IdleRGB
             try
             {
                 if (CueSDK.IsInitialized)
+                {
                     CueSDK.Reinitialize();
+                }
             }
 
             catch (WrapperException e)
@@ -85,7 +81,6 @@ namespace IdleRGB
             catch (CUEException e)
             {
                 Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), e.Error));
-                
             }
         }
     }

@@ -2,12 +2,11 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using IdleRGB.Properties;
 using System.Windows.Media;
-using System.Security.Permissions;
 using CUE.NET;
 using CUE.NET.Devices.Generic;
 using System.Windows.Input;
+using IdleRGB.Core;
 
 namespace IdleRGB
 {
@@ -16,10 +15,11 @@ namespace IdleRGB
     /// </summary>
     public partial class SettingsWindow : ToolWindow
     {
-        bool autoStart;
-        Color newIdleColor;
-        Color newCapsColor;
+        TimeSpan idleTime;
+        Color idleColor;
+        Color capsColor;
 
+        public static EventHandler ReleasedControl;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SettingsWindow" /> class.
@@ -40,22 +40,29 @@ namespace IdleRGB
         /// </summary>
         private void LoadSettings()
         {
-            var it = Settings.Default.idleTime;
+            var settings = SettingsManager.GetSettings();
 
-            hoursComboBox.SelectedItem = it.Hours;
-            minutesComboBox.SelectedItem = it.Minutes;
-            secondsComboBox.SelectedItem = it.Seconds;
+            idleTime = settings.Item1;
+
+            hoursComboBox.SelectedItem = idleTime.Hours;
+            minutesComboBox.SelectedItem = idleTime.Minutes;
+            secondsComboBox.SelectedItem = idleTime.Seconds;
             
-            Color color = Color.FromRgb(Settings.Default.idleColor.R, Settings.Default.idleColor.G, Settings.Default.idleColor.B);
+            Color color = Color.FromRgb(settings.Item2.R, settings.Item2.G, settings.Item2.B);
             
             idleRectangle.Fill = new SolidColorBrush(color);
-            newIdleColor = color;
+            idleColor = color;
 
-            color = Color.FromRgb(Settings.Default.capsColor.R, Settings.Default.capsColor.G, Settings.Default.capsColor.B);
+            color = Color.FromRgb(settings.Item3.R, settings.Item3.G, settings.Item3.B);
             capsLockRectangle.Fill = new SolidColorBrush(color);
-            newCapsColor = color;
+            capsColor = color;
 
-            InitializeAutoStartCheckbox();
+            bool? autoStart = SettingsManager.GetAutoStart();
+
+            if (autoStart == null)
+                autostartCheckbox.Visibility = Visibility.Hidden;
+            else
+                autostartCheckbox.IsChecked = autoStart;
         }
 
         /// <summary>
@@ -79,41 +86,14 @@ namespace IdleRGB
         {
             TimeSpan newTime = GetNewTime();
 
-            if (Settings.Default.idleTime != newTime)
-                Settings.Default.idleTime = newTime;
-                Settings.Default.Save();
+            bool? autoStart = null;
+            if(autostartCheckbox.Visibility == Visibility.Visible)
+                autoStart = autostartCheckbox.IsChecked;
 
-            if (autostartCheckbox.IsChecked != autoStart)
-            {
-                try
-                {
-                    autoStart = (bool)autostartCheckbox.IsChecked;
+            var newIdleColor = System.Drawing.Color.FromArgb(idleColor.R, idleColor.G, idleColor.B);
+            var newCapsColor = System.Drawing.Color.FromArgb(capsColor.R, capsColor.G, capsColor.B);
 
-                    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-                    if (autoStart)
-                        key.SetValue(Process.GetCurrentProcess().ProcessName, Process.GetCurrentProcess().MainModule.FileName);
-                    else
-                        key.DeleteValue(Process.GetCurrentProcess().ProcessName, false);
-                }
-
-                catch(Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            }
-
-            Color oldColor = Color.FromRgb(Settings.Default.idleColor.R, Settings.Default.idleColor.R, Settings.Default.idleColor.B);
-
-            if (oldColor != newIdleColor)
-                Settings.Default.idleColor = System.Drawing.Color.FromArgb(newIdleColor.R, newIdleColor.G, newIdleColor.B);
-
-            oldColor = Color.FromRgb(Settings.Default.capsColor.R, Settings.Default.capsColor.G, Settings.Default.capsColor.B);
-
-            if (oldColor != newCapsColor)
-                Settings.Default.capsColor = System.Drawing.Color.FromArgb(newCapsColor.R, newCapsColor.G, newCapsColor.B);
-
-            Settings.Default.Save();
+            SettingsManager.SaveSettings(idleTime, newIdleColor, newCapsColor, autoStart);
             Close();
         }
 
@@ -125,36 +105,8 @@ namespace IdleRGB
         /// <param name="e"></param>
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
-            if (capsToggled)
-                LedChanger.ChangeLeds(Settings.Default.capsColor);
-            else
-                LedChanger.ResetLeds();
+            ReleasedControl.Invoke(null, null);
             Close();
-        }
-
-        /// <summary>
-        ///     Removes autoStartCheckbox if registry is unavailable. Otherwise sets appropriate check value.
-        /// </summary>
-        private void InitializeAutoStartCheckbox()
-        {
-            try
-            {
-                RegistryPermission perm1 = new RegistryPermission(RegistryPermissionAccess.Write, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
-                perm1.Demand();
-                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-                if (key.GetValue(Process.GetCurrentProcess().ProcessName) != null)
-                    autostartCheckbox.IsChecked = autoStart = true;
-                else
-                    autostartCheckbox.IsChecked = autoStart = false;
-            }
-
-            // No registry access.
-            catch (System.Security.SecurityException)
-            {
-                autostartCheckbox.Visibility = Visibility.Hidden;
-            }
         }
 
         /// <summary>
@@ -183,7 +135,7 @@ namespace IdleRGB
             else
                 setCapsButton.Visibility = Visibility.Hidden;
 
-            colorCanvas.SelectedColor = Color.FromRgb(newIdleColor.R, newIdleColor.G, newIdleColor.B);
+            colorCanvas.SelectedColor = Color.FromRgb(idleColor.R, idleColor.G, idleColor.B);
             setIdleButton.Visibility = Visibility.Visible;
         }
 
@@ -200,7 +152,7 @@ namespace IdleRGB
             else
                 setIdleButton.Visibility = Visibility.Hidden;
 
-            colorCanvas.SelectedColor = Color.FromRgb(newCapsColor.R, newCapsColor.G, newCapsColor.B);
+            colorCanvas.SelectedColor = Color.FromRgb(capsColor.R, capsColor.G, capsColor.B);
             setCapsButton.Visibility = Visibility.Visible;
         }
 
@@ -228,15 +180,11 @@ namespace IdleRGB
             setIdleButton.Visibility = Visibility.Hidden;
             colorCanvas.Visibility = Visibility.Hidden;
 
-            newIdleColor = Color.FromRgb(colorCanvas.R, colorCanvas.G, colorCanvas.B);
+            idleColor = Color.FromRgb(colorCanvas.R, colorCanvas.G, colorCanvas.B);
 
-            idleRectangle.Fill = new SolidColorBrush(newIdleColor);
+            idleRectangle.Fill = new SolidColorBrush(idleColor);
 
-            var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
-            if (capsToggled)
-                LedChanger.ChangeLeds(Settings.Default.capsColor);
-            else
-                LedChanger.ResetLeds();
+            ReleasedControl.Invoke(null, null);
         }
 
         /// <summary>
@@ -249,14 +197,10 @@ namespace IdleRGB
             setCapsButton.Visibility = Visibility.Hidden;
             colorCanvas.Visibility = Visibility.Hidden;
 
-            newCapsColor = Color.FromRgb(colorCanvas.R, colorCanvas.G, colorCanvas.B);
-            capsLockRectangle.Fill = new SolidColorBrush(newCapsColor);
+            capsColor = Color.FromRgb(colorCanvas.R, colorCanvas.G, colorCanvas.B);
+            capsLockRectangle.Fill = new SolidColorBrush(capsColor);
 
-            var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
-            if (capsToggled)
-                LedChanger.ChangeLeds(Settings.Default.capsColor);
-            else
-                LedChanger.ResetLeds();
+            ReleasedControl.Invoke(null, null);
         }
     }
 }

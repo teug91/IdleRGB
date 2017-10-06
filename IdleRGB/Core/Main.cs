@@ -4,43 +4,39 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Input;
-using IdleRGB.Properties;
-using CUE.NET;
-using CUE.NET.Devices.Generic.Enums;
-using CUE.NET.Devices.Headset;
-using CUE.NET.Devices.Keyboard;
-using CUE.NET.Devices.Mouse;
-using CUE.NET.Devices.Mousemat;
-using CUE.NET.Exceptions;
 
-namespace IdleRGB
+namespace IdleRGB.Core
 {
     /// <summary>
     ///     Checks for input.
     /// </summary>
     internal class Main
     {
-        private Color capsColor;
-        private Color idleColor;
         private KeyboardInput keyboard;
         private MouseInput mouse;
 
+        private Color capsColor;
+        private Color idleColor;
+
         private TimeSpan idleTime;
+        private DateTime lastInput;
 
         private bool inCaps;
         private bool inIdle;
 
-        private DateTime lastInput;
-        private Timer initializationTimer;
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="Main" /> class.
         /// </summary>
-        public Main()
+        internal Main()
         {
+            var settings = SettingsManager.GetSettings();
+
             lastInput = DateTime.Now;
-            idleTime = Settings.Default.idleTime;
-            Settings.Default.SettingsSaving += SettingSaving;
+            idleTime = settings.Item1;
+            idleColor = settings.Item2;
+            capsColor = settings.Item3;
+
+            Properties.Settings.Default.SettingsSaving += SettingSaving;
 
             keyboard = new KeyboardInput();
             keyboard.KeyBoardKeyPressed += InputAction;
@@ -48,16 +44,9 @@ namespace IdleRGB
             mouse = new MouseInput();
             mouse.MouseMoved += InputAction;
 
-            CueSDK.PossibleX86NativePaths.Add(AppDomain.CurrentDomain.BaseDirectory + @"x86\CUESDK_2015.dll");
-            CueSDK.PossibleX64NativePaths.Add(AppDomain.CurrentDomain.BaseDirectory + @"x64\CUESDK_2015.dll");
+            new Initializer().NewCorsairDeviceConnected += UpdateNewDevice;
 
-            initializationTimer = new Timer(1);
-            initializationTimer.Elapsed += CheckForCue;
-            initializationTimer.Enabled = true;
-            GC.KeepAlive(initializationTimer);
-
-            idleColor = Settings.Default.idleColor;
-            capsColor = Settings.Default.capsColor;
+            SettingsWindow.ReleasedControl += RetakeControl;
 
             if (Keyboard.IsKeyToggled(Key.CapsLock))
             {
@@ -69,12 +58,35 @@ namespace IdleRGB
         }
 
         /// <summary>
+        /// Changes LEDs to proper color after color picker has changed it.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RetakeControl(object sender, EventArgs e)
+        {
+            var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
+
+            if (capsToggled)
+            {
+                LedChanger.ChangeLeds(capsColor);
+                inCaps = true;
+            }
+
+            else
+            {
+                LedChanger.ResetLeds();
+                inCaps= inIdle = false;
+            }
+        }
+
+        /// <summary>
         ///     Updates last input and changes LEDs if needed.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void InputAction(object sender, EventArgs e)
         {
+            //System.Diagnostics.Debug.WriteLine("INPUT");
             var capsToggled = Keyboard.IsKeyToggled(Key.CapsLock);
 
             if (inIdle)
@@ -102,6 +114,7 @@ namespace IdleRGB
             else if (capsToggled && !inCaps)
             {
                 LedChanger.ChangeLeds(capsColor);
+                //System.Diagnostics.Debug.WriteLine("GOING CAPS!");
                 inCaps = true;
             }
 
@@ -114,7 +127,7 @@ namespace IdleRGB
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Timers.ElapsedEventArgs" /> instance containing the event data.</param>
-        private void Timer1_Tick(object sender, ElapsedEventArgs e)
+        private void IdleCheck(object sender, ElapsedEventArgs e)
         {
             if (!inIdle)
             {
@@ -132,7 +145,7 @@ namespace IdleRGB
         private void InitTimer()
         {
             Timer timer = new Timer();
-            timer.Elapsed += Timer1_Tick;
+            timer.Elapsed += IdleCheck;
             timer.Interval = 1000;
             timer.Enabled = true;
             GC.KeepAlive(timer);
@@ -145,14 +158,16 @@ namespace IdleRGB
         /// <param name="e"></param>
         private void SettingSaving(object sender, CancelEventArgs e)
         {
-            if (idleTime != Settings.Default.idleTime)
-                idleTime = Settings.Default.idleTime;
+            var settings = SettingsManager.GetSettings();
 
-            if (idleColor != Settings.Default.idleColor)
-                idleColor = Settings.Default.idleColor;
+            if (idleTime != settings.Item1)
+                idleTime = settings.Item1;
 
-            if (capsColor != Settings.Default.capsColor)
-                capsColor = Settings.Default.capsColor;
+            if (idleColor != settings.Item2)
+                idleColor = settings.Item2;
+
+            if (capsColor != settings.Item3)
+                capsColor = settings.Item3;
 
             if (inCaps)
                 LedChanger.ChangeLeds(capsColor);
@@ -160,47 +175,19 @@ namespace IdleRGB
                 LedChanger.ResetLeds();
         }
 
+
         /// <summary>
-        ///     If SDK is available, initializes after 5 seconds.
+        /// Changes LEDs of newly connected device.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckForCue(object sender, ElapsedEventArgs e)
+        private void UpdateNewDevice(object sender, EventArgs e)
         {
-            if (CueSDK.IsSDKAvailable())
-            {
-                initializationTimer.Enabled = false;
-                initializationTimer.Elapsed += InitializeSDK;
-                initializationTimer.Elapsed -= CheckForCue;
-                initializationTimer.Interval = 5000;
-                initializationTimer.Enabled = true;
-            }
-        }
+            if(inIdle)
+                LedChanger.ChangeLeds(idleColor);
 
-        /// <summary>
-        ///     Attempts to initialize SDK.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void InitializeSDK(object sender, ElapsedEventArgs e)
-        {
-            try
-            {
-                CueSDK.Initialize();
-                initializationTimer.Stop();
-                initializationTimer.Dispose();
-            }
-
-            catch (WrapperException ex)
-            {
-                Debug.WriteLine("Wrapper Exception! Message:" + ex.Message);
-            }
-
-            catch (CUEException ex)
-            {
-                Debug.WriteLine("CUE Exception! ErrorCode: " + Enum.GetName(typeof(CorsairError), ex.Error));
-
-            }
+            else if(inCaps)
+                LedChanger.ChangeLeds(capsColor);
         }
     }
 }

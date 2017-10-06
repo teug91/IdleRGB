@@ -49,7 +49,7 @@ namespace IdleRGB.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        [global::System.Configuration.DefaultSettingValueAttribute("255, 98, 0")]
         public global::System.Drawing.Color capsColor {
             get {
                 return ((global::System.Drawing.Color)(this["capsColor"]));

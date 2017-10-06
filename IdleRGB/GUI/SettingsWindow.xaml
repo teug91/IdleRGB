@@ -73,12 +73,13 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{StaticResource ComboBox.Static.Background}" SnapsToDevicePixels="true">
                             <Border x:Name="splitBorder" BorderBrush="Transparent" BorderThickness="1"
-                                    HorizontalAlignment="Right" Margin="0" SnapsToDevicePixels="true"
+                                    HorizontalAlignment="Right" Margin="0,0,2,0" SnapsToDevicePixels="true"
                                     Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
                                 <Path x:Name="arrow"
-                                      Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z"
-                                      Fill="{StaticResource ComboBox.Static.Glyph}" HorizontalAlignment="Center"
-                                      Margin="0" VerticalAlignment="Center" />
+                                      Data="M 0.5 0 L 6.5 6 L 12.5 0" 
+                                      Stroke="{StaticResource ComboBox.Static.Glyph}" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" 
+                                      SnapsToDevicePixels="True" StrokeThickness="2"/>
                             </Border>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -104,7 +105,7 @@
                                         Value="{StaticResource ComboBox.Static.Editable.Button.Border}" />
                             </MultiDataTrigger>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Fill" TargetName="arrow"
+                                <Setter Property="Stroke" TargetName="arrow"
                                         Value="{StaticResource ComboBox.Static.Glyph}" />
                             </Trigger>
                             <MultiDataTrigger>
@@ -138,7 +139,7 @@
                                         Value="{StaticResource ComboBox.MouseOver.Editable.Button.Border}" />
                             </MultiDataTrigger>
                             <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Fill" TargetName="arrow"
+                                <Setter Property="Stroke" TargetName="arrow"
                                         Value="{StaticResource ComboBox.Static.Glyph}" />
                             </Trigger>
                             <MultiDataTrigger>
@@ -172,7 +173,7 @@
                                         Value="{StaticResource ComboBox.Pressed.Editable.Button.Border}" />
                             </MultiDataTrigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Fill" TargetName="arrow"
+                                <Setter Property="Stroke" TargetName="arrow"
                                         Value="{StaticResource ComboBox.Static.Glyph}" />
                             </Trigger>
                             <MultiDataTrigger>

@@ -20,7 +20,8 @@ namespace IdleRGB
 
             notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
 
-            var input = new Main();
+            new Core.Main();
+            
         }
 
         /// <summary>
