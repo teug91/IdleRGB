@@ -7,6 +7,7 @@ using CUE.NET;
 using CUE.NET.Devices.Generic;
 using System.Windows.Input;
 using IdleRGB.Core;
+using System.Windows.Media.Imaging;
 
 namespace IdleRGB
 {

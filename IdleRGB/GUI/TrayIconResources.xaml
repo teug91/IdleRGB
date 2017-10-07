@@ -18,7 +18,7 @@
     </ContextMenu>
 
     <tb:TaskbarIcon x:Key="NotifyIcon"
-                    IconSource="/IdleRGB;component/Resources/bulb.ico"
+                    IconSource="/IdleRGB;component/Resources/rgb.ico"
                     ToolTipText="IdleRGB"
                     DoubleClickCommand="{Binding ShowWindowCommand}"
                     ContextMenu="{StaticResource SysTrayMenu}">
