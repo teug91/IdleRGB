@@ -26,6 +26,7 @@ namespace IdleRGB
                         {
                             Application.Current.MainWindow = new SettingsWindow();
                             Application.Current.MainWindow.Show();
+                            Application.Current.MainWindow.Activate();
                         }
                     }
                 };
